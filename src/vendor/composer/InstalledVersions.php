@@ -14,12 +14,12 @@ class InstalledVersions
 private static $installed = array (
   'root' => 
   array (
-    'pretty_version' => 'dev-master',
-    'version' => 'dev-master',
+    'pretty_version' => 'v8.4.0',
+    'version' => '8.4.0.0',
     'aliases' => 
     array (
     ),
-    'reference' => '718e1e8f66783be6cebdfdbdcb354620ef329a71',
+    'reference' => NULL,
     'name' => 'laravel/laravel',
   ),
   'versions' => 
@@ -137,6 +137,15 @@ private static $installed = array (
       ),
       'reference' => '3c921a1cdba35b68a7f0ccffc6dffc1995b18267',
     ),
+    'fakerphp/faker' => 
+    array (
+      'pretty_version' => 'v1.10.1',
+      'version' => '1.10.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'f2713a5016faaf6ffc60e9d456dedb5ebf0efcae',
+    ),
     'fideloper/proxy' => 
     array (
       'pretty_version' => '4.4.1',
@@ -163,15 +172,6 @@ private static $installed = array (
       array (
       ),
       'reference' => '01de0fe5f71c70d1930ee9a80385f9cc28e0f63a',
-    ),
-    'fzaninotto/faker' => 
-    array (
-      'pretty_version' => 'v1.9.1',
-      'version' => '1.9.1.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'fc10d778e4b84d5bd315dad194661e091d307c6f',
     ),
     'graham-campbell/result-type' => 
     array (
@@ -453,12 +453,12 @@ private static $installed = array (
     ),
     'laravel/laravel' => 
     array (
-      'pretty_version' => 'dev-master',
-      'version' => 'dev-master',
+      'pretty_version' => 'v8.4.0',
+      'version' => '8.4.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '718e1e8f66783be6cebdfdbdcb354620ef329a71',
+      'reference' => NULL,
     ),
     'laravel/tinker' => 
     array (
