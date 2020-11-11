@@ -14,13 +14,17 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
 });
 
 Route::get('/PlayAsGuest', function () {
     return view('PlayAsGuest');
-});
+})->name('PlayAsGuest');
 
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::get('/profile', [App\Http\Controllers\UserController::class, 'getUser'])->name('profile.index')->middleware('auth');
+
+Route::get('/statistics', [App\Http\Controllers\UserController::class, 'getUserPlayings'])->name('statistics.index')->middleware('auth');
