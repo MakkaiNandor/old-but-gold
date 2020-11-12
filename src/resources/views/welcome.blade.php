@@ -53,7 +53,7 @@
                 color: grey;
                 box-shadow: 0px 0px 20px 20px rgba(0,0,0,0.3);
                 border-radius: 50%;
-                padding: 10px;
+                padding: 17px;
                 margin-left: 25px;
             }
             .battleship{

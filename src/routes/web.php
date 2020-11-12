@@ -21,6 +21,10 @@ Route::get('/PlayAsGuest', function () {
     return view('PlayAsGuest');
 });
 
+Route::get('/StartGameAsGuest', function () {
+    return view('StartGameAsGuest');
+});
+
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
