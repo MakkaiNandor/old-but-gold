@@ -4,7 +4,7 @@
     @guest
         <div class="container text-center">
             <p class="mt-5 h4">The Battelship game is the best in the world, try it yourself now as guest or you can registrate!</p>
-            <p><img src="./images/logo.jpg" alt="image"/></p>
+            <p><img src="./images/logo.png" alt="image"/></p>
             <p><a href="{{ route('PlayAsGuest') }}" class="btn btn-outlined-primary btn-lg rounded-circle p-4 border-dark">Play as guest</a></p>
         </div>
     @else
@@ -28,4 +28,14 @@
             </div>
         </div>
     @endguest
+@endsection
+
+@section('page_style')
+    <style>
+    </style>
+@endsection
+
+@section('page_script')
+    <script>
+    </script>
 @endsection

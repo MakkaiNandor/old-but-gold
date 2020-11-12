@@ -19,7 +19,7 @@ Route::get('/', function () {
 
 Route::get('/PlayAsGuest', function () {
     return view('PlayAsGuest');
-})->name('PlayAsGuest');
+})->name('PlayAsGuest')->middleware('guest');
 
 Auth::routes();
 
