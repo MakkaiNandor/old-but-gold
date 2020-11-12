@@ -19,11 +19,11 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->integer('level');
-            $table->integer('played_games');
-            $table->integer('victories');
-            $table->integer('defeats');
-            $table->integer('experience_points');
+            $table->unsignedInteger('level');
+            $table->unsignedInteger('played_games');
+            $table->unsignedInteger('victories');
+            $table->unsignedInteger('defeats');
+            $table->unsignedBigInteger('experience_points');
             $table->rememberToken();
             $table->timestamps();
         });
