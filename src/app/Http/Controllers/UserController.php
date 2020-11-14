@@ -8,24 +8,9 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function updateUserData(){
-
+    public function update(Request $request, User $user){
+        dd($request['new-password']);
     }
-
-    public function getUser(){
-        dd(Auth::user());
-        return view('profile', [
-            'user' => Auth::user()
-        ]);
-    }
-
-    public function getUserPlayings(){
-        dd(Auth::user()->playings);
-        return view('statistics', [
-            'playings' => Auth::user()->playings
-        ]);
-    }
-
     // /**
     //  * Display a listing of the resource.
     //  *

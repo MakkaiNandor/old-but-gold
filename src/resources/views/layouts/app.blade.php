@@ -60,11 +60,11 @@
                             @endif
                         @else
                             <li class="nav-item mr-3">
-                                <a class="nav-link" href="{{ route('profile.index') }}">{{ __('Profile') }}</a>
+                                <a class="nav-link" href="{{ route('profile') }}">{{ __('Profile') }}</a>
                             </li>
 
                             <li class="nav-item mr-3">
-                                <a class="nav-link" href="{{ route('statistics.index') }}">{{ __('Statistics') }}</a>
+                                <a class="nav-link" href="{{ route('statistics') }}">{{ __('Statistics') }}</a>
                             </li>
 
                             <li class="nav-item mr-5">

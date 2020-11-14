@@ -17,14 +17,29 @@ Route::get('/', function () {
     return view('home');
 });
 
-Route::get('/PlayAsGuest', function () {
+Route::get('/guest', function () {
     return view('PlayAsGuest');
 })->name('PlayAsGuest')->middleware('guest');
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', function() {
+    return view('home', [
+        'user' => Auth::user()
+    ]);
+})->name('home');
 
-Route::get('/profile', [App\Http\Controllers\UserController::class, 'getUser'])->name('profile.index')->middleware('auth');
+Route::get('/profile', function(){
+    return view('profile', [
+        'user' => Auth::user()
+    ]);
+})->name('profile')->middleware('auth');
 
-Route::get('/statistics', [App\Http\Controllers\UserController::class, 'getUserPlayings'])->name('statistics.index')->middleware('auth');
+Route::get('/statistics', function(){
+    dd(Auth::user()->playings);
+    return view('home', [
+        'playings' => Auth::user()->playings
+    ]);
+})->name('statistics')->middleware('auth');
+
+Route::post('/profile/update', [App\Http\Controllers\UserController::class, 'update'])->name('profile.update')->middleware('auth');
