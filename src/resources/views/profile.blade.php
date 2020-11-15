@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div id="content" class="container">
+    <div id="content" class="container pl-5 pr-5">
         <div id="section-one" class="section">
             <div id="avatar">{{ strtoupper($user->username[0]) }}</div>
             <span>{{ $user->username }}</span>
@@ -28,62 +28,19 @@
         <div id="change-password" class="pop-up d-none">
             <p class="title">Change Password</p>
             <hr/>
-            <form method="POST" action="{{ route('profile.update') }}">
-                @csrf
-
-                <div class="form-group row text-center">
-                    <label for="old-password">Old Password:</label>
-                    <div class="col-md-6">
-                        <input type="password" name="old-password"/>
-                        @error('old-password')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label for="confirm-password">Confirm Password:</label>
-                    <div class="col-md-6">
-                        <input type="password" name="confirm-password"/>
-                        @error('confirm-password')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label for="new-password">New Password:</label>
-                    <div class="col-md-6">
-                        <input type="password" name="new-password"/>
-                        @error('new-password')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="form-group row mb-0">
-                    <div class="col-md-6 offset-md-4">
-                        <button type="submit" class="btn btn-primary">
-                            Change password
-                        </button>
-                    </div>
-                </div>
-
-            </form>
+            <!-- TODO: Change Password Form -->
             <button id="pwd" class="back-button btn btn-danger">Back</button>
         </div>
         <div id="change-username" class="pop-up d-none">
             <p class="title">Change Username</p>
+            <hr/>
+            <!-- TODO: Change Username Form -->
             <button id="usr" class="back-button btn btn-danger">Back</button>
         </div>
         <div id="delete-account" class="pop-up d-none">
             <p class="title">Delete Account</p>
+            <hr/>
+            <!-- TODO: Delete Account Confirmation -->
             <button id="acc" class="back-button btn btn-danger">Back</button>
         </div>
     </div>
@@ -110,10 +67,6 @@
             line-height: 50px;
             padding: 20px;
             font-size: 18pt;
-        }
-
-        .section p {
-            margin-left: 40px;
         }
 
         #blur {
@@ -146,7 +99,6 @@
 
 @section('page_script')
     <script>
-        // var changePasswordLink, changeUsernameLink, deleteAccountLink;
         var blurBackground, changePasswordDiv, changeUsernameDiv, deleteAccountDiv;
 
         window.onload = function() {
@@ -154,10 +106,6 @@
             changePasswordDiv = document.getElementById('change-password');
             changeUsernameDiv = document.getElementById('change-username');
             deleteAccountDiv = document.getElementById('delete-account');
-
-            // changePasswordLink = document.getElementById('change-password-link');
-            // changeUsernameLink = document.getElementById('change-username-link');
-            // deleteAccountLink = document.getElementById('delete-account-link');
 
             document.getElementById('change-password-link').addEventListener('click', onChangePassword);
             document.getElementById('change-username-link').addEventListener('click', onChangeUsername);

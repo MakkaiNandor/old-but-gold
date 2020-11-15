@@ -5,12 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
-    public function update(Request $request, User $user){
-        dd($request['new-password']);
-    }
+    // TODO: Update User's Data
+
     // /**
     //  * Display a listing of the resource.
     //  *

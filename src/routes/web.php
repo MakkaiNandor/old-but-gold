@@ -41,5 +41,3 @@ Route::get('/statistics', function(){
         'playings' => Auth::user()->playings
     ]);
 })->name('statistics')->middleware('auth');
-
-Route::post('/profile/update', [App\Http\Controllers\UserController::class, 'update'])->name('profile.update')->middleware('auth');
