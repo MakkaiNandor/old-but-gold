@@ -2,6 +2,7 @@
 
 @section('content')
     <div id="content" class="container pl-5 pr-5">
+        <h2 id="title" class="text-center">Profile</h2>
         <div id="section-one" class="section">
             <div id="avatar">{{ strtoupper($user->username[0]) }}</div>
             <span>{{ $user->username }}</span>

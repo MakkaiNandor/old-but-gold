@@ -36,8 +36,15 @@ Route::get('/profile', function(){
 })->name('profile')->middleware('auth');
 
 Route::get('/statistics', function(){
-    dd(Auth::user()->playings);
-    return view('home', [
-        'playings' => Auth::user()->playings
+    $playings = Auth::user()->playings;
+    $games = new Illuminate\Database\Eloquent\Collection;
+
+    foreach($playings as $playing){
+        $games->push($playing->game);
+    }
+
+    return view('statistics', [
+        'playings' => $playings,
+        'games' => $games
     ]);
 })->name('statistics')->middleware('auth');
