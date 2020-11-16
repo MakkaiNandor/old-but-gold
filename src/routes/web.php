@@ -48,3 +48,7 @@ Route::get('/statistics', function(){
         'games' => $games
     ]);
 })->name('statistics')->middleware('auth');
+
+Route::get('/singleplayer/preparing', function(){
+    return view('preparing');
+})->name('singleplayer.preparing');

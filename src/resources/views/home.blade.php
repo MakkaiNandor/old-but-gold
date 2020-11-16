@@ -17,7 +17,7 @@
                 <div class="col">{{ "Defeats: " . $user->defeats }}</div>
             </div>
             <div id="buttons" class="text-center">
-                <a id="single" class="play-btn card mx-5" href="{{ route('profile') }}">Singleplayer</a>
+                <a id="single" class="play-btn card mx-5" href="{{ route('singleplayer.preparing') }}">Singleplayer</a>
                 <a id="multi" class="play-btn card mx-5" href="#">Multiplayer</a>
             </div>
         </div>
@@ -62,18 +62,20 @@
 @endsection
 
 @section('page_script')
-    <script>
-        window.onload = function(){
-            document.getElementById("single").addEventListener("click", startSinglePlayer);
-            document.getElementById("multi").addEventListener("click", startMultiPlayer);
-        }
+    @auth
+        <script>
+            window.onload = function(){
+                document.getElementById("single").addEventListener("click", startSinglePlayer);
+                document.getElementById("multi").addEventListener("click", startMultiPlayer);
+            }
 
-        function startSinglePlayer(){
+            function startSinglePlayer(){
 
-        }
+            }
 
-        function startMultiPlayer(){
-            alert("Coming soon");
-        }
-    </script>
+            function startMultiPlayer(){
+                alert("Coming soon");
+            }
+        </script>
+    @endauth
 @endsection
