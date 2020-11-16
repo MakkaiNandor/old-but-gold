@@ -30,18 +30,21 @@
             <p class="title">Change Password</p>
             <hr/>
             <!-- TODO: Change Password Form -->
+            <p>Coming soon!</p>
             <button id="pwd" class="back-button btn btn-danger">Back</button>
         </div>
         <div id="change-username" class="pop-up d-none">
             <p class="title">Change Username</p>
             <hr/>
             <!-- TODO: Change Username Form -->
+            <p>Coming soon!</p>
             <button id="usr" class="back-button btn btn-danger">Back</button>
         </div>
         <div id="delete-account" class="pop-up d-none">
             <p class="title">Delete Account</p>
             <hr/>
             <!-- TODO: Delete Account Confirmation -->
+            <p>Coming soon!</p>
             <button id="acc" class="back-button btn btn-danger">Back</button>
         </div>
     </div>

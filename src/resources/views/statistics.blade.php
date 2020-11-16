@@ -132,6 +132,10 @@
         function getDataPoints(){
             var victoriesData = [], defeatsData = [];
             var date = new Date(user.created_at);
+            date.setHours(0);
+            date.setMinutes(0);
+            date.setSeconds(0);
+            date.setMilliseconds(0);
 
             while(true){
                 if(date.getTime() > Date.now()){
