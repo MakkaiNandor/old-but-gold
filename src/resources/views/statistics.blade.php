@@ -8,8 +8,33 @@
                 <div id="gamesPieChart" class="chart my-5" style="position: static; height: 360px; width: 90%;"></div>
                 <div id="gamesLineChart" class="chart my-5" style="position: static; height: 360px; width: 90%;"></div>
             </div>
-            <div id="right-side" class="col-sm">
-
+            <div id="right-side" class="col-sm text-center">
+                <table id="top-100"class="mt-5">
+                    <tr>
+                        <th>#</th>
+                        <th>Lvl.</th>
+                        <th>XP</th>
+                        <th>Username</th>
+                        <th>Victories</th>
+                        <th>Defeats</th>
+                    </tr>
+                    @foreach(App\Models\User::orderBy('experience_points', 'desc')->take(100)->get() as $user)
+                        @if($user->id == Auth::user()->id)
+                            <tr key="{{ $user->id }}" style="background-color: yellow;">
+                        @elseif($loop->index % 2 == 0)
+                            <tr key="{{ $user->id }}" style="background-color: lightgray;">
+                        @else
+                            <tr key="{{ $user->id }}">
+                        @endif
+                            <td>{{ $loop->index + 1 }}</td>
+                            <td>{{ $user->level }}</td>
+                            <td>{{ $user->experience_points }}</td>
+                            <td>{{ $user->username }}</td>
+                            <td>{{ $user->victories }}</td>
+                            <td>{{ $user->defeats }}</td>
+                        </tr>
+                    @endforeach
+                </table>
             </div>
         </div>
     </div>
@@ -17,12 +42,20 @@
 
 @section('page_style')
     <style>
-        .vl {
-            background-color: black;
-            width: 1px;
+        #right-side {
             height: 100vh;
+            overflow: auto;
         }
-        .chart {
+
+        #top-100 {
+            width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #top-100 td {
+            padding-top: 10px;
+            padding-bottom: 10px;
         }
     </style>
 @endsection
@@ -34,43 +67,15 @@
         var playings = {!! $playings !!};
         var games = {!! $games !!};
 
-        var victoriesData = [], defeatsData = [];
-        var date = new Date(user.created_at);
-
-        while(true){
-            if(date.getTime() > Date.now()){
-                break;
-            }
-            var victories = 0, defeats = 0;
-            for(var game of games){
-                var start = new Date(game.starting_time);
-                if(start.getFullYear() == date.getFullYear() && start.getMonth() == date.getMonth() && start.getDate() == date.getDate()){
-                    for(var playing of playings){
-                        if(game.id == playing.game_id){
-                            if(playing.is_winner == "1"){
-                                ++victories;
-                            }
-                            else{
-                                ++defeats;
-                            }
-                        }
-                    }
-                }
-            }
-            var newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0);
-            victoriesData.push({
-                x: newDate,
-                y: victories
-            });
-            defeatsData.push({
-                x: newDate,
-                y: defeats
-            });
-            date.setDate(date.getDate() + 1);
+        window.onload = function() {
+            var pieChart = createPieChart();
+            var lineChart = createLineChart();
+            pieChart.render();
+            lineChart.render();
         }
 
-        window.onload = function() {
-            var gamesPieChart  = new CanvasJS.Chart("gamesPieChart", {
+        function createPieChart(){
+            return new CanvasJS.Chart("gamesPieChart", {
                 theme: "light2",
                 animationEnabled: true,	
                 title:{
@@ -90,14 +95,19 @@
                 }
                 ]
             });
-            gamesPieChart.render();
+        }
 
-            var gamesLineChart = new CanvasJS.Chart("gamesLineChart", {
+        function createLineChart(){
+            [victoriesData, defeatsData] = getDataPoints();
+            return new CanvasJS.Chart("gamesLineChart", {
                 animationEnabled: true,
                 theme: "light2",
                 title:{
                     text: "PLayed Games Daily",
                     fontSize: 20
+                },
+                axisX: {
+                    valueFormatString: "DD MMM, YYYY"
                 },
                 axisY: {
                     title: "PLayed Games",
@@ -106,23 +116,56 @@
                 data: [{        
                     type: "line",
                     color: "green",
-                    showInLegend: true,
                     name: "Victories",
-                    indexLabelFontSize: 16,
-		            xValueFormatString: "DD MMM, YYYY",
+                    showInLegend: true,
                     dataPoints: victoriesData
                 },{
                     type: "line",
                     color: "red",
                     name: "Defeats",
                     showInLegend: true,
-                    indexLabelFontSize: 16,
-		            xValueFormatString: "DD MMM, YYYY",
                     dataPoints: defeatsData
                 }]
             });
-            gamesLineChart.render();
         }
 
+        function getDataPoints(){
+            var victoriesData = [], defeatsData = [];
+            var date = new Date(user.created_at);
+
+            while(true){
+                if(date.getTime() > Date.now()){
+                    break;
+                }
+                var victories = 0, defeats = 0;
+                for(var game of games){
+                    var start = new Date(game.starting_time);
+                    if(start.getFullYear() == date.getFullYear() && start.getMonth() == date.getMonth() && start.getDate() == date.getDate()){
+                        for(var playing of playings){
+                            if(game.id == playing.game_id){
+                                if(playing.is_winner == "1"){
+                                    ++victories;
+                                }
+                                else{
+                                    ++defeats;
+                                }
+                            }
+                        }
+                    }
+                }
+                var newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0);
+                victoriesData.push({
+                    x: newDate,
+                    y: victories
+                });
+                defeatsData.push({
+                    x: newDate,
+                    y: defeats
+                });
+                date.setDate(date.getDate() + 1);
+            }
+
+            return [victoriesData, defeatsData];
+        }
     </script>
 @endsection
