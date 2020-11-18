@@ -17,7 +17,7 @@ Route::get('/', function () {
     return view('home');
 });
 
-Route::get('/PlayAsGuest', function () {
+Route::get('/guest', function () {
     return view('PlayAsGuest');
 })->name('PlayAsGuest')->middleware('guest');
 
@@ -27,8 +27,32 @@ Route::get('/StartGameAsGuest', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', function() {
+    return view('home', [
+        'user' => Auth::user()
+    ]);
+})->name('home');
 
-Route::get('/profile', [App\Http\Controllers\UserController::class, 'getUser'])->name('profile.index')->middleware('auth');
+Route::get('/profile', function(){
+    return view('profile', [
+        'user' => Auth::user()
+    ]);
+})->name('profile')->middleware('auth');
 
-Route::get('/statistics', [App\Http\Controllers\UserController::class, 'getUserPlayings'])->name('statistics.index')->middleware('auth');
+Route::get('/statistics', function(){
+    $playings = Auth::user()->playings;
+    $games = new Illuminate\Database\Eloquent\Collection;
+
+    foreach($playings as $playing){
+        $games->push($playing->game);
+    }
+
+    return view('statistics', [
+        'playings' => $playings,
+        'games' => $games
+    ]);
+})->name('statistics')->middleware('auth');
+
+Route::get('/singleplayer/preparing', function(){
+    return view('preparing');
+})->name('singleplayer.preparing');

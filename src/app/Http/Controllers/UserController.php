@@ -5,26 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
-    public function updateUserData(){
-
-    }
-
-    public function getUser(){
-        dd(Auth::user());
-        return view('profile', [
-            'user' => Auth::user()
-        ]);
-    }
-
-    public function getUserPlayings(){
-        dd(Auth::user()->playings);
-        return view('statistics', [
-            'playings' => Auth::user()->playings
-        ]);
-    }
+    // TODO: Update User's Data
 
     // /**
     //  * Display a listing of the resource.

@@ -27,11 +27,11 @@
             <div class="container">
                 @guest
                     <a class="navbar-brand" href="{{ url('/') }}">
-                        <img src="./images/logo.png" alt="image" height="45" />
+                        <img src="{{ asset('images/logo.png') }}" alt="image" height="45" />
                     </a>
                 @else
                     <a class="navbar-brand" href="{{ route('home') }}">
-                        <img src="./images/logo.png" alt="image" height="45" />
+                        <img src="{{ asset('images/logo.png') }}" alt="image" height="45" />
                     </a>
                 @endguest
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -60,11 +60,11 @@
                             @endif
                         @else
                             <li class="nav-item mr-3">
-                                <a class="nav-link" href="{{ route('profile.index') }}">{{ __('Profile') }}</a>
+                                <a class="nav-link" href="{{ route('profile') }}">{{ __('Profile') }}</a>
                             </li>
 
                             <li class="nav-item mr-3">
-                                <a class="nav-link" href="{{ route('statistics.index') }}">{{ __('Statistics') }}</a>
+                                <a class="nav-link" href="{{ route('statistics') }}">{{ __('Statistics') }}</a>
                             </li>
 
                             <li class="nav-item mr-5">
