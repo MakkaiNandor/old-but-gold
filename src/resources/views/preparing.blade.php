@@ -46,14 +46,9 @@
         <hr />
         <h4>Ships:</h4>
         <div id="ship-box">
-            <!-- @foreach([5, 4, 3, 3, 2] as $size)
-                <div class="ship" style="height: {{ $size * 38 }}px;"></div>
-            @endforeach -->
-            <div class="ship"></div>
-            <div class="ship"></div>
-            <div class="ship"></div>
-            <div class="ship"></div>
-            <div class="ship"></div>
+            @foreach([5, 4, 3, 3, 2] as $size)
+                <div class="ship rotate-ship" style="width: {{ $size * 38 }}px;"></div>
+            @endforeach
         </div>
     </div>
 @endsection
@@ -97,15 +92,21 @@
             color: black;
         }
 
+        #ship-box {
+            height: 200px;
+        }
+
         #ship-box .ship {
             display: inline-block;
-            width: 38px;
-            height: 114px;
+            position: relative;
+            width: 114px;
+            height: 38px;
             border-radius: 50px;
             background-color: brown;
-            margin-left: 10px;
-            margin-right: 10px;
-            transition: transform 1s ease-out;
+            margin-left: 5px;
+            margin-right: 5px;
+            margin-top: 50px;
+            transition: transform 0.5s ease-out;
         }
 
         .rotate-ship {
