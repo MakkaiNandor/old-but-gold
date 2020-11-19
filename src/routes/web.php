@@ -13,9 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('home');
-});
+Route::redirect('/', '/home');
 
 Route::get('/guest', function () {
     return view('PlayAsGuest');
@@ -52,3 +50,5 @@ Route::get('/statistics', function(){
 Route::get('/singleplayer/preparing', function(){
     return view('preparing');
 })->name('singleplayer.preparing');
+
+Route::post('/singleplayer/game', [App\Http\Controllers\GameController::class, 'startGame'])->name('startgame');

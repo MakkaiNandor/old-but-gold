@@ -6,6 +6,10 @@
         <div id="content-box" class="row my-5">
             <div id="left-box" class="col">
                 <a id="start-game-btn" class="action-btn disabled-btn" href="#">Start Game</a>
+                <form id="start-game-form" action="{{ route('startgame') }}" method="POST" class="d-none">
+                    @csrf
+                    <input name="data" type="hidden" value=""/>
+                </form>
             </div>
             <div id="center-box" class="col-6">
                 <table>
@@ -186,17 +190,16 @@
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         ];
 
-        console.log(map);
-
         window.onload = function(){
             shipBox = document.getElementById("ship-box");
 
-            // document.getElementById("start-game-btn").addEventListener("click", function(){
-            //     var xhr = new XMLHttpRequest();
-            //     var data = { "map" : map };
-            //     xhr.open("POST", "/home", true);
-
-            // });
+            document.getElementById("start-game-btn").addEventListener("click", function(){
+                event.preventDefault();
+                var data = JSON.stringify(map);
+                var form = document.getElementById("start-game-form");
+                form.data.value = data;
+                form.submit();
+            });
 
             document.getElementById("rotate-ships-btn").addEventListener("click", function(){
                 for(var ship of document.querySelectorAll("#ship-box .ship")){
@@ -350,7 +353,6 @@
                 newDiv.className = stepRight == 0 ? "ship-end-right" : stepLeft == 0 ? "ship-end-left" : "ship-body-horizontal";
                 ev.target.appendChild(newDiv);
             }
-            console.log(map);
 
             shipBox.removeChild(document.getElementById(id));
 

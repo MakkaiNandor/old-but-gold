@@ -8,6 +8,12 @@ use Illuminate\Http\Request;
 class GameController extends Controller
 {
 
+    public function startGame(Request $request){
+        dd($request->method);
+        return view('game', [
+            'map' => $request->data
+        ]);
+    }
     
     // /**
     //  * Display a listing of the resource.
