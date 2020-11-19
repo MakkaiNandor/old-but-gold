@@ -5,7 +5,7 @@
         <div class="container text-center">
             <p class="mt-5 h4">The Battelship game is the best in the world, try it yourself now as guest or you can registrate!</p>
             <p><img src="./images/logo.png" alt="image"/></p>
-            <p><a href="{{ route('PlayAsGuest') }}" class="btn btn-outlined-primary btn-lg rounded-circle p-4 border-dark">Play as guest</a></p>
+            <a href="{{ route('PlayAsGuest') }}" class="play-as-guest card">Play as guest</a>
         </div>
     @else
         <div class="container">
@@ -54,6 +54,26 @@
         }
 
         .play-btn:hover {
+            box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+            text-decoration: none;
+            color: black;
+        }
+
+        .play-as-guest {
+            display: inline-block;
+            text-decoration: none;
+            color: black;
+            padding: 20px;
+            border: 1px solid black;
+            border-radius: 50px;
+            font-size: 18pt;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .play-as-guest:hover {
             box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
             text-decoration: none;
             color: black;

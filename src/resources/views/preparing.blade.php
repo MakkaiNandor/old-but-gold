@@ -8,50 +8,34 @@
                 <a id="start-game-btn" class="action-btn" href="#">Start Game</a>
             </div>
             <div id="center-box" class="col-6">
-                <!-- <table>
-                    <tr>
-                        <td></td>
-                        <td>A</td>
-                        <td>B</td>
-                        <td>C</td>
-                        <td>D</td>
-                        <td>E</td>
-                        <td>F</td>
-                        <td>G</td>
-                        <td>H</td>
-                        <td>I</td>
-                        <td>J</td>
+                <table>
+                    <tr id="header">
+                        @foreach(["", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J"] as $col)
+                            <td>{{ $col }}</td>
+                        @endforeach
                     </tr>
                     @for($i = 0 ; $i < 10 ; $i++)
-                        <tr key="{{ $i }}">
+                        <tr key="{{ $i }}" id="row-{{ $i }}">
                             <td>{{ $i }}</td>
                             @for($j = 0 ; $j < 10 ; $j++)
                                 <td><div id="{{ $i }}-{{ $j }}" class="section"></div></td>
                             @endfor
                         </tr>
                     @endfor
-                </table> -->
-                <div class="row">
-                    <div class="col"></div>
-                    <div class="col">A</div>
-                    <div class="col">B</div>
-                    <div class="col">C</div>
-                    <div class="col">D</div>
-                    <div class="col">E</div>
-                    <div class="col">F</div>
-                    <div class="col">G</div>
-                    <div class="col">H</div>
-                    <div class="col">I</div>
-                    <div class="col">J</div>
+                </table>
+                <!-- <div class="row">
+                    @foreach(["", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J"] as $col)
+                        <div class="col-sm">{{ $col }}</div>
+                    @endforeach
                 </div>
                 @for($i = 0 ; $i < 10 ; $i++)
                     <div class="row">
-                        <div class="col">{{ $i }}</div>
+                        <div class="col-sm">{{ $i }}</div>
                         @for($j = 0 ; $j < 10 ; $j++)
-                            <div id="{{ $i }}-{{ $j }}" class="col section"></div>
+                            <div id="{{ $i }}-{{ $j }}" class="col-sm section"></div>
                         @endfor
                     </div>
-                @endfor
+                @endfor -->
             </div>
             <div id="right-box" class="col">
                 <div id="rotate-ships-btn" class="action-btn">Rotate Ships</div>
@@ -73,7 +57,6 @@
             position: relative;
             width: 38px;
             height: 38px;
-            border: 1px solid white;
             background-color: lightblue;
         }
 
@@ -136,13 +119,62 @@
             height: 38px;
         }
 
-        .ship-body {
+        .ship-body-horizontal {
             position: absolute;
             background-color: brown;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 2px;
+            left: -1px;
+            right: -1px;
+            bottom: 2px;
+        }
+
+        .ship-body-vertical {
+            position: absolute;
+            background-color: brown;
+            top: -1px;
+            left: 2px;
+            right: 2px;
+            bottom: -1px;
+        }
+
+        .ship-end-up {
+            position: absolute;
+            background-color:brown;
+            top: 2px;
+            left: 2px;
+            right: 2px;
+            bottom: -1px;
+            border-radius: 50px 50px 0 0;
+        }
+
+        .ship-end-down {
+            position: absolute;
+            background-color:brown;
+            top: -1px;
+            left: 2px;
+            right: 2px;
+            bottom: 2px;
+            border-radius: 0 0 50px 50px;
+        }
+
+        .ship-end-left {
+            position: absolute;
+            background-color:brown;
+            top: 2px;
+            left: 2px;
+            right: -1px;
+            bottom: 2px;
+            border-radius: 50px 0 0 50px;
+        }
+
+        .ship-end-right {
+            position: absolute;
+            background-color:brown;
+            top: 2px;
+            left: -1px;
+            right: 2px;
+            bottom: 2px;
+            border-radius: 0 50px 50px 0;
         }
     </style>
 @endsection
@@ -206,6 +238,7 @@
             var col = parseInt(tmp[1]);
             if(map[row][col] == 1) return;
             if(isRotated){
+                // fuggoleges
                 var step = 1;
                 var spaceUp = 0, spaceDown = 0;
                 while(true){
@@ -246,16 +279,21 @@
                 for(var i = stepUp ; i > 0 ; --i){
                     map[row-i][col] = 1;
                     var newDiv = document.createElement("div");
-                    newDiv.className = "ship-body";
+                    newDiv.className = i == stepUp ? "ship-end-up" : "ship-body-vertical";
                     document.getElementById("" + (row-i) + "-" + col).appendChild(newDiv);
                 }
 
-                for(var i = stepDown ; i >= 0 ; --i){
+                for(var i = stepDown ; i > 0 ; --i){
                     map[row+i][col] = 1;
                     var newDiv = document.createElement("div");
-                    newDiv.className = "ship-body";
+                    newDiv.className = i == stepDown ? "ship-end-down" : "ship-body-vertical";
                     document.getElementById("" + (row + i) + "-" + col).appendChild(newDiv);
                 }
+
+                map[row][col] = 1;
+                var newDiv = document.createElement("div");
+                newDiv.className = stepDown == 0 ? "ship-end-down" : stepUp == 0 ? "ship-end-up" : "ship-body-vertical";
+                ev.target.appendChild(newDiv);
             }
             else{
                 // vizszintes
@@ -298,21 +336,23 @@
                 for(var i = stepLeft ; i > 0 ; --i){
                     map[row][col-i] = 1;
                     var newDiv = document.createElement("div");
-                    newDiv.className = "ship-body";
+                    newDiv.className = i == stepLeft ? "ship-end-left" : "ship-body-horizontal";
                     document.getElementById("" + row + "-" + (col - i)).appendChild(newDiv);
                 }
+
                 for(var i = stepRight ; i > 0 ; --i){
                     map[row][col+i] = 1;
                     var newDiv = document.createElement("div");
-                    newDiv.className = "ship-body";
+                    newDiv.className = i == stepRight ? "ship-end-right" : "ship-body-horizontal";
                     document.getElementById("" + row + "-" + (col + i)).appendChild(newDiv);
                 }
+
+                map[row][col] = 1;
+                var newDiv = document.createElement("div");
+                newDiv.className = stepRight == 0 ? "ship-end-right" : stepLeft == 0 ? "ship-end-left" : "ship-body-horizontal";
+                ev.target.appendChild(newDiv);
             }
             console.log(map);
-
-            var newDiv = document.createElement("div");
-            newDiv.className = "ship-body";
-            ev.target.appendChild(newDiv);
 
             shipBox.removeChild(document.getElementById(id));
         }
