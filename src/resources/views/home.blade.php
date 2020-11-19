@@ -5,7 +5,7 @@
         <div class="container text-center">
             <p class="mt-5 h4">The Battelship game is the best in the world, try it yourself now as guest or you can registrate!</p>
             <p><img src="./images/logo.png" alt="image"/></p>
-            <p><a href="{{ route('PlayAsGuest') }}" class="btn btn-outlined-primary btn-lg rounded-circle p-4 border-dark">Play as guest</a></p>
+            <p><a href="{{ route('singleplayer.preparing') }}" class="btn btn-outlined-primary btn-lg rounded-circle p-4 border-dark PlayAsGuest">Play as guest</a></p>
         </div>
     @else
         <div class="container">
@@ -57,6 +57,18 @@
             box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
             text-decoration: none;
             color: black;
+        }
+
+        .PlayAsGuest {
+            background-color: rgba(0,0,0,0.05);
+            text-decoration: none;  
+            font: 40px "Nunito", sans-serif;
+            color: grey;
+            box-shadow: 0px 0px 20px 20px rgba(0,0,0,0.3);
+            border-radius: 50%;
+            padding: 17px;
+            margin-left: 25px;
+            border: none;
         }
     </style>
 @endsection

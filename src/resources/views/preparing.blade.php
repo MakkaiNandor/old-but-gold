@@ -25,16 +25,16 @@
                     @for($i = 0 ; $i < 10 ; $i++)
                         <tr key="{{ $i }}">
                             <td>{{ $i }}</td>
-                            <td class="section"></td>
-                            <td class="section"></td>
-                            <td class="section"></td>
-                            <td class="section"></td>
-                            <td class="section"></td>
-                            <td class="section"></td>
-                            <td class="section"></td>
-                            <td class="section"></td>
-                            <td class="section"></td>
-                            <td class="section"></td>
+                            <td class="section" ondrop="drop(event)" ondragover="allowDrop(event)"></td>
+                            <td class="section" ondrop="drop(event)" ondragover="allowDrop(event)"></td>
+                            <td class="section" ondrop="drop(event)" ondragover="allowDrop(event)"></td>
+                            <td class="section" ondrop="drop(event)" ondragover="allowDrop(event)"></td>
+                            <td class="section" ondrop="drop(event)" ondragover="allowDrop(event)"></td>
+                            <td class="section" ondrop="drop(event)" ondragover="allowDrop(event)"></td>
+                            <td class="section" ondrop="drop(event)" ondragover="allowDrop(event)"></td>
+                            <td class="section" ondrop="drop(event)" ondragover="allowDrop(event)"></td>
+                            <td class="section" ondrop="drop(event)" ondragover="allowDrop(event)"></td>
+                            <td class="section" ondrop="drop(event)" ondragover="allowDrop(event)"></td>
                         </tr>
                     @endfor
                 </table>
@@ -47,7 +47,7 @@
         <h4>Ships:</h4>
         <div id="ship-box">
             @foreach([5, 4, 3, 3, 2] as $size)
-                <div class="ship rotate-ship" style="width: {{ $size * 38 }}px;"></div>
+                <div class="ship rotate-ship" style="width: {{ $size * 38 }}px; " draggable="true" ondragstart="drag(event)"></div>
             @endforeach
         </div>
     </div>
@@ -112,6 +112,13 @@
         .rotate-ship {
             transform: rotate(90deg);
         }
+
+        .ship{
+            background-color: brown;
+            border-radius: 50px;
+            height: 114px;
+            width: 38px;
+        }
     </style>
 @endsection
 
@@ -123,6 +130,21 @@
                     ship.classList.toggle("rotate-ship");
                 }
             })
+        }
+
+        function allowDrop(ev) {
+            ev.preventDefault();
+        }
+
+        function drag(ev) {
+             ev.dataTransfer.setData("text", ev.target.id);
+             console.log(ev);
+        } 
+        function drop(ev) {
+            ev.preventDefault();
+            var data = ev.dataTransfer.getData("text");
+            ev.target.appendChild(document.getElementById(data));
+            console.log(ev);
         }
     </script>
 @endsection
