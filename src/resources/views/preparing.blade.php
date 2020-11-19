@@ -5,37 +5,24 @@
         <h2>Drag and drop your ships to the sea</h2>
         <div id="content-box" class="row my-5">
             <div id="left-box" class="col">
-                <a id="start-game-btn" class="action-btn" href="#">Start Game</a>
+                <a id="start-game-btn" class="action-btn disabled-btn" href="#">Start Game</a>
             </div>
             <div id="center-box" class="col-6">
                 <table>
-                    <tr id="header">
+                    <tr>
                         @foreach(["", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J"] as $col)
-                            <td>{{ $col }}</td>
+                            <th>{{ $col }}</th>
                         @endforeach
                     </tr>
                     @for($i = 0 ; $i < 10 ; $i++)
                         <tr key="{{ $i }}" id="row-{{ $i }}">
-                            <td>{{ $i }}</td>
+                            <td style="padding-right: 10px; font-weight: bold;">{{ $i }}</td>
                             @for($j = 0 ; $j < 10 ; $j++)
                                 <td><div id="{{ $i }}-{{ $j }}" class="section"></div></td>
                             @endfor
                         </tr>
                     @endfor
                 </table>
-                <!-- <div class="row">
-                    @foreach(["", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J"] as $col)
-                        <div class="col-sm">{{ $col }}</div>
-                    @endforeach
-                </div>
-                @for($i = 0 ; $i < 10 ; $i++)
-                    <div class="row">
-                        <div class="col-sm">{{ $i }}</div>
-                        @for($j = 0 ; $j < 10 ; $j++)
-                            <div id="{{ $i }}-{{ $j }}" class="col-sm section"></div>
-                        @endfor
-                    </div>
-                @endfor -->
             </div>
             <div id="right-box" class="col">
                 <div id="rotate-ships-btn" class="action-btn">Rotate Ships</div>
@@ -71,6 +58,11 @@
             justify-content: center;
         }
 
+        .disabled-btn {
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
         .action-btn {
             text-decoration: none;
             padding: 20px;
@@ -97,7 +89,6 @@
         #ship-box .ship {
             display: inline-block;
             position: relative;
-            width: 114px;
             height: 38px;
             border-radius: 50px;
             background-color: brown;
@@ -199,6 +190,13 @@
 
         window.onload = function(){
             shipBox = document.getElementById("ship-box");
+
+            // document.getElementById("start-game-btn").addEventListener("click", function(){
+            //     var xhr = new XMLHttpRequest();
+            //     var data = { "map" : map };
+            //     xhr.open("POST", "/home", true);
+
+            // });
 
             document.getElementById("rotate-ships-btn").addEventListener("click", function(){
                 for(var ship of document.querySelectorAll("#ship-box .ship")){
@@ -355,6 +353,10 @@
             console.log(map);
 
             shipBox.removeChild(document.getElementById(id));
+
+            if(shipBox.children.length == 0){
+                document.getElementById("start-game-btn").classList.toggle("disabled-btn");
+            }
         }
     </script>
 @endsection
