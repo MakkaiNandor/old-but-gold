@@ -9,9 +9,9 @@ class GameController extends Controller
 {
 
     public function startGame(Request $request){
-        dd($request->method);
+        $map = json_decode($request->data);
         return view('game', [
-            'map' => $request->data
+            'map' => $map
         ]);
     }
     

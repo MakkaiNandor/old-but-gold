@@ -198,6 +198,7 @@
                 var data = JSON.stringify(map);
                 var form = document.getElementById("start-game-form");
                 form.data.value = data;
+                console.log(data, typeof data);
                 form.submit();
             });
 
@@ -278,22 +279,44 @@
                 }
 
                 for(var i = stepUp ; i > 0 ; --i){
-                    map[row-i][col] = 1;
                     var newDiv = document.createElement("div");
-                    newDiv.className = i == stepUp ? "ship-end-up" : "ship-body-vertical";
+                    if(i == stepUp){
+                        newDiv.className = "ship-end-up";
+                        map[row-i][col] = 1;
+                    }
+                    else{
+                        newDiv.className = "ship-body-vertical";
+                        map[row-i][col] = 3;
+                    }
                     document.getElementById("" + (row-i) + "-" + col).appendChild(newDiv);
                 }
 
                 for(var i = stepDown ; i > 0 ; --i){
-                    map[row+i][col] = 1;
                     var newDiv = document.createElement("div");
-                    newDiv.className = i == stepDown ? "ship-end-down" : "ship-body-vertical";
+                    if(i == stepDown){
+                        newDiv.className = "ship-end-down";
+                        map[row+i][col] = 2;
+                    }
+                    else{
+                        newDiv.className = "ship-body-vertical";
+                        map[row+i][col] = 3;
+                    }
                     document.getElementById("" + (row + i) + "-" + col).appendChild(newDiv);
                 }
 
-                map[row][col] = 1;
                 var newDiv = document.createElement("div");
-                newDiv.className = stepDown == 0 ? "ship-end-down" : stepUp == 0 ? "ship-end-up" : "ship-body-vertical";
+                if(stepDown == 0){
+                    newDiv.className = "ship-end-down";
+                    map[row][col] = 2;
+                }
+                else if(stepUp == 0){
+                    newDiv.className = "ship-end-up";
+                    map[row][col] = 1;
+                }
+                else{
+                    newDiv.className = "ship-body-vertical";
+                    map[row][col] = 3;
+                }
                 ev.target.appendChild(newDiv);
             }
             else{
@@ -335,22 +358,44 @@
                     stepLeft = size - stepRight - 1;
                 }
                 for(var i = stepLeft ; i > 0 ; --i){
-                    map[row][col-i] = 1;
                     var newDiv = document.createElement("div");
-                    newDiv.className = i == stepLeft ? "ship-end-left" : "ship-body-horizontal";
+                    if(i == stepLeft){
+                        newDiv.className = "ship-end-left";
+                        map[row][col-i] = -1;
+                    }
+                    else{   
+                        newDiv.className = "ship-body-horizontal";
+                        map[row][col-i] = -3;
+                    }
                     document.getElementById("" + row + "-" + (col - i)).appendChild(newDiv);
                 }
 
                 for(var i = stepRight ; i > 0 ; --i){
-                    map[row][col+i] = 1;
                     var newDiv = document.createElement("div");
-                    newDiv.className = i == stepRight ? "ship-end-right" : "ship-body-horizontal";
+                    if(i == stepRight){
+                        newDiv.className = "ship-end-right";
+                        map[row][col+i] = -2;
+                    }
+                    else{   
+                        newDiv.className = "ship-body-horizontal";
+                        map[row][col+i] = -3;
+                    }
                     document.getElementById("" + row + "-" + (col + i)).appendChild(newDiv);
                 }
 
-                map[row][col] = 1;
                 var newDiv = document.createElement("div");
-                newDiv.className = stepRight == 0 ? "ship-end-right" : stepLeft == 0 ? "ship-end-left" : "ship-body-horizontal";
+                if(stepRight == 0){
+                    newDiv.className = "ship-end-right";
+                    map[row][col] = -2;
+                }
+                else if(stepLeft == 0){
+                    newDiv.className = "ship-end-left";
+                    map[row][col] = -1;
+                }
+                else{   
+                    newDiv.className = "ship-body-horizontal";
+                    map[row][col] = -3;
+                }
                 ev.target.appendChild(newDiv);
             }
 
