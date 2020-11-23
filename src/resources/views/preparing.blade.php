@@ -6,6 +6,17 @@
         <div id="content-box" class="row my-5">
             <div id="left-box" class="col">
                 <a id="start-game-btn" class="action-btn disabled-btn" href="#">Start Game</a>
+                @guest
+                    <form id="start-game-form" action="{{ route('guest.game') }}" method="POST" class="d-none">
+                        @csrf
+                        <input name="data" type="hidden" value=""/>
+                    </form>
+                @else
+                    <form id="start-game-form" action="{{ route('singleplayer.game') }}" method="POST" class="d-none">
+                        @csrf
+                        <input name="data" type="hidden" value=""/>
+                    </form>
+                @endguest
             </div>
             <div id="center-box" class="col-6">
                 <table>
@@ -18,7 +29,7 @@
                         <tr key="{{ $i }}" id="row-{{ $i }}">
                             <td style="padding-right: 10px; font-weight: bold;">{{ $i }}</td>
                             @for($j = 0 ; $j < 10 ; $j++)
-                                <td><div id="{{ $i }}-{{ $j }}" class="section"></div></td>
+                                <td><div id="{{ $i }}-{{ $j }}" class="section" ondrop="drop(event)" ondragover="allowDrop(event)"></div></td>
                             @endfor
                         </tr>
                     @endfor
@@ -32,7 +43,7 @@
         <h4>Ships:</h4>
         <div id="ship-box">
             @foreach([5, 4, 3, 3, 2] as $size)
-                <div id="ship-{{ $loop->index }}-size-{{ $size }}" class="ship rotate-ship" style="width: {{ $size * 38 }}px;" draggable="true"></div>
+                <div id="ship-{{ $loop->index }}-size-{{ $size }}" class="ship rotate-ship" style="width: {{ $size * 38 }}px;" ondragstart="drag(event)" draggable="true"></div>
             @endforeach
         </div>
     </div>
@@ -186,59 +197,55 @@
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         ];
 
-        console.log(map);
-
         window.onload = function(){
+            // hajókat tartalmazó doboz
             shipBox = document.getElementById("ship-box");
 
-            // document.getElementById("start-game-btn").addEventListener("click", function(){
-            //     var xhr = new XMLHttpRequest();
-            //     var data = { "map" : map };
-            //     xhr.open("POST", "/home", true);
+            // a játék gomb lenyomásával elküldi a map-et a következő oldalra
+            document.getElementById("start-game-btn").addEventListener("click", function(){
+                event.preventDefault();
+                var data = JSON.stringify(map);
+                var form = document.getElementById("start-game-form");
+                form.data.value = data;
+                console.log(data, typeof data);
+                form.submit();
+            });
 
-            // });
-
+            // hajók forgatása
             document.getElementById("rotate-ships-btn").addEventListener("click", function(){
                 for(var ship of document.querySelectorAll("#ship-box .ship")){
                     ship.classList.toggle("rotate-ship");
                 }
-            })
-
-            var items = document.getElementsByClassName("ship");
-            for(var item of items){
-                item.addEventListener("dragstart", drag);
-            };
-
-            items = document.getElementsByClassName("section");
-            for(var item of items){
-                item.addEventListener("drop", drop);
-                item.addEventListener("dragover", allowDrop);
-            };
+            });
         }
 
+        // drag and drop engedéjezése
         function allowDrop(ev) {
             ev.preventDefault();
         }
 
+        // hajó megfogása
         function drag(ev) {
             ev.dataTransfer.setData("id", ev.target.id);
             ev.dataTransfer.setData("className", ev.target.className);
         } 
 
+        // hajó elengedése
         function drop(ev) {
             ev.preventDefault();
-            var id = ev.dataTransfer.getData("id");
-            var size = parseInt(id.split("-").pop());
-            var className = ev.dataTransfer.getData("className");
-            var isRotated = className.split(" ").includes("rotate-ship");
-            var tmp = ev.target.id.split("-");
-            var row = parseInt(tmp[0]);
-            var col = parseInt(tmp[1]);
-            if(map[row][col] == 1) return;
+            var id = ev.dataTransfer.getData("id");     // hajó id-ja
+            var size = parseInt(id.split("-").pop());   // hajó mérete
+            var className = ev.dataTransfer.getData("className");   // hajó classje
+            var isRotated = className.split(" ").includes("rotate-ship");   // vizszintes vagy fuggoleges
+            var tmp = ev.target.id.split("-");  // koordináták
+            var row = parseInt(tmp[0]);     // sorszám
+            var col = parseInt(tmp[1]);     // oszlopszám
+            if(map[row][col] == 1) return;  // ha már van hajó a koordinátán, akkor kilépünk
             if(isRotated){
-                // fuggoleges
-                var step = 1;
-                var spaceUp = 0, spaceDown = 0;
+                // függőleges hajó esetén
+                var step = 1;   // lépés
+                var spaceUp = 0, spaceDown = 0; // szabad helyek száma felfele és lefele
+                // szabad helyek számolása felfele
                 while(true){
                     if(row - step < 0) break;
                     if(map[row-step][col] == 0){
@@ -248,6 +255,7 @@
                     else break;
                 }
                 step = 1;
+                // szabad helyek számolása lefele
                 while(true){
                     if(row + step > 9) break;
                     if(map[row+step][col] == 0){
@@ -256,17 +264,18 @@
                     }
                     else break;
                 }
-
+                // ha nincs elég hely a hajónak, kilépünk
                 var allSpaces = spaceUp + spaceDown + 1;
                 if(allSpaces < size){
                     return;
                 }
 
-                var stepUp = Math.floor(size / 2);
-                var stepDown = size - stepUp - 1;
+                var stepUp = Math.floor(size / 2);  // hajóelemek száma felfele
+                var stepDown = size - stepUp - 1;   // hajóelemek száma lefele
 
+                // hajó elosztása a szabad helyeken
                 if(stepUp > spaceUp){
-                    stepUp =spaceUp;
+                    stepUp = spaceUp;
                     stepDown = size - stepUp - 1;
                 }
                 else if(stepDown > spaceDown){
@@ -274,29 +283,58 @@
                     stepUp = size - stepDown - 1;
                 }
 
+                // hajó felső részének elhelyezése
                 for(var i = stepUp ; i > 0 ; --i){
-                    map[row-i][col] = 1;
-                    var newDiv = document.createElement("div");
-                    newDiv.className = i == stepUp ? "ship-end-up" : "ship-body-vertical";
+                    var newDiv = document.createElement("div"); // új hajóelem elkészítése
+                    if(i == stepUp){    // ha a hajóelem a hajó felső vége
+                        newDiv.className = "ship-end-up";
+                        map[row-i][col] = 1;
+                    }
+                    else{   // ha hajótörzs
+                        newDiv.className = "ship-body-vertical";
+                        map[row-i][col] = 3;
+                    }
+                    // hajóelem beszúrása a html-be
                     document.getElementById("" + (row-i) + "-" + col).appendChild(newDiv);
                 }
 
+                // hajó alsó részének elhelyezése
                 for(var i = stepDown ; i > 0 ; --i){
-                    map[row+i][col] = 1;
-                    var newDiv = document.createElement("div");
-                    newDiv.className = i == stepDown ? "ship-end-down" : "ship-body-vertical";
+                    var newDiv = document.createElement("div"); // új hajóelem elkészítése
+                    if(i == stepDown){      // ha a hajóelem a hajó alsó vége
+                        newDiv.className = "ship-end-down";
+                        map[row+i][col] = 2;
+                    }
+                    else{   // ha hajótörzs
+                        newDiv.className = "ship-body-vertical";
+                        map[row+i][col] = 3;
+                    }
+                    // hajóelem beszúrása a html-be
                     document.getElementById("" + (row + i) + "-" + col).appendChild(newDiv);
                 }
 
-                map[row][col] = 1;
-                var newDiv = document.createElement("div");
-                newDiv.className = stepDown == 0 ? "ship-end-down" : stepUp == 0 ? "ship-end-up" : "ship-body-vertical";
+                // a koordinátán levő hajóelem
+                var newDiv = document.createElement("div"); // új hajóelem létrehozása
+                if(stepDown == 0){      // ha a hajóelem a hajó alsó vége
+                    newDiv.className = "ship-end-down";
+                    map[row][col] = 2;
+                }
+                else if(stepUp == 0){   // ha a hajóelem a hajó felső vége
+                    newDiv.className = "ship-end-up";
+                    map[row][col] = 1;
+                }
+                else{       // ha a hajóelem hajótörzs
+                    newDiv.className = "ship-body-vertical";
+                    map[row][col] = 3;
+                }
+                // hajóelem beszúrása a html-be
                 ev.target.appendChild(newDiv);
             }
             else{
-                // vizszintes
-                var step = 1;
-                var spaceLeft = 0, spaceRight = 0;
+                // Vízszintes hajó esetén
+                var step = 1;   // lépés
+                var spaceLeft = 0, spaceRight = 0;  // szabad helyek száma balra és jobbra
+                // szabad helyek számolása balra
                 while(true){
                     if(col - step < 0) break;
                     if(map[row][col-step] == 0){
@@ -306,6 +344,7 @@
                     else break;
                 }
                 step = 1;
+                // szabad helyek számolása jobbra
                 while(true){
                     if(col + step > 9) break;
                     if(map[row][col+step] == 0){
@@ -314,15 +353,16 @@
                     }
                     else break;
                 }
-
+                // ha nincs elég hely a hajónak, kilépünk
                 var allSpaces = spaceLeft + spaceRight + 1;
                 if(allSpaces < size){
                     return;
                 }
 
-                var stepRight = Math.floor(size / 2);
-                var stepLeft = size - stepRight - 1;
+                var stepRight = Math.floor(size / 2);   // hajóelemek száma jobbra
+                var stepLeft = size - stepRight - 1;    // hajóelemek száma balra
 
+                // hajó elosztása a szabad helyeken
                 if(stepLeft > spaceLeft){
                     stepLeft = spaceLeft;
                     stepRight = size - stepLeft - 1;
@@ -331,29 +371,59 @@
                     stepRight = spaceRight;
                     stepLeft = size - stepRight - 1;
                 }
+                
+                // hajó bal oldali részének elhelyezése
                 for(var i = stepLeft ; i > 0 ; --i){
-                    map[row][col-i] = 1;
-                    var newDiv = document.createElement("div");
-                    newDiv.className = i == stepLeft ? "ship-end-left" : "ship-body-horizontal";
+                    var newDiv = document.createElement("div"); // új hajóelem készítése
+                    if(i == stepLeft){  // ha a hajóelem a hajó bal oldali vége
+                        newDiv.className = "ship-end-left";
+                        map[row][col-i] = -1;
+                    }
+                    else{   // ha a hajóelem hajótörzs
+                        newDiv.className = "ship-body-horizontal";
+                        map[row][col-i] = -3;
+                    }
+                    // hajóelem beszúrása a html-be
                     document.getElementById("" + row + "-" + (col - i)).appendChild(newDiv);
                 }
 
+                // hajó jobb oldali részének elhelyezése
                 for(var i = stepRight ; i > 0 ; --i){
-                    map[row][col+i] = 1;
-                    var newDiv = document.createElement("div");
-                    newDiv.className = i == stepRight ? "ship-end-right" : "ship-body-horizontal";
+                    var newDiv = document.createElement("div"); // új hajóelem készítése
+                    if(i == stepRight){     // ha a hajóelem a hajó jobb oldali vége
+                        newDiv.className = "ship-end-right";
+                        map[row][col+i] = -2;
+                    }
+                    else{   // ha a hajóelem hajótörzs     
+                        newDiv.className = "ship-body-horizontal";
+                        map[row][col+i] = -3;
+                    }
+                    // hajóelem beszúrása a html-be
                     document.getElementById("" + row + "-" + (col + i)).appendChild(newDiv);
                 }
 
-                map[row][col] = 1;
-                var newDiv = document.createElement("div");
-                newDiv.className = stepRight == 0 ? "ship-end-right" : stepLeft == 0 ? "ship-end-left" : "ship-body-horizontal";
+                // a koordinátán levő hajóelem
+                var newDiv = document.createElement("div"); // új hajóelem létrehozása
+                if(stepRight == 0){    // ha a hajóelem a hajó jobb oldali vége
+                    newDiv.className = "ship-end-right";
+                    map[row][col] = -2;
+                }  
+                else if(stepLeft == 0){     // ha a hajóelem a hajó bal oldali vége
+                    newDiv.className = "ship-end-left";
+                    map[row][col] = -1;
+                }
+                else{   // ha a hajóelem hajótörzs   
+                    newDiv.className = "ship-body-horizontal";
+                    map[row][col] = -3;
+                }
+                // hajóelem beszúrása a html-be
                 ev.target.appendChild(newDiv);
             }
-            console.log(map);
 
+            // hajó törlése a hajókat tartalmazó dobozból
             shipBox.removeChild(document.getElementById(id));
 
+            // amikor elfogynak a hajók, a játék indító gomb aktívvá válik
             if(shipBox.children.length == 0){
                 document.getElementById("start-game-btn").classList.toggle("disabled-btn");
             }
