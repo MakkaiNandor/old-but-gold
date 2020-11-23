@@ -56,3 +56,8 @@ Route::get('/statistics', function(){
 Route::get('/singleplayer/preparing', function(){
     return view('preparing');
 })->name('singleplayer.preparing');
+
+Route::post('/home', function($data){
+    dd($data);
+    return view('home');
+})->name('startgamesingleplayer.preparing');

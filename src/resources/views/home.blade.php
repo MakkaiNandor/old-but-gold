@@ -20,6 +20,9 @@
                 <a id="single" class="play-btn card mx-5" href="{{ route('singleplayer.preparing') }}">Singleplayer</a>
                 <a id="multi" class="play-btn card mx-5" href="#">Multiplayer</a>
             </div>
+            <div>
+            {{$map ?? ''}}
+            </div>
         </div>
     @endguest
 @endsection

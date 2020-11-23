@@ -103,13 +103,6 @@
             transform: rotate(90deg);
         }
 
-<<<<<<< HEAD
-        .ship{
-            background-color: brown;
-            border-radius: 50px;
-            height: 114px;
-            width: 38px;
-=======
         #content-box .ship {
             background-color: brown;
             border-radius: 50px;
@@ -173,7 +166,6 @@
             right: 2px;
             bottom: 2px;
             border-radius: 0 50px 50px 0;
->>>>>>> 96e8cf546b0010a2cae7cc558aba7b242d063d4d
         }
     </style>
 @endsection
@@ -199,12 +191,42 @@
         window.onload = function(){
             shipBox = document.getElementById("ship-box");
 
-            // document.getElementById("start-game-btn").addEventListener("click", function(){
-            //     var xhr = new XMLHttpRequest();
-            //     var data = { "map" : map };
-            //     xhr.open("POST", "/home", true);
-
-            // });
+            document.getElementById("start-game-btn").addEventListener("click", function(){
+                /*
+                var xhr = new XMLHttpRequest();
+                var data = { "map" : map };
+                xhr.open("POST", "/home", true);
+                
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.setRequestHeader("X-CSRF-Token", "{{csrf_token()}}");
+                xhr.onreadystatechange = function() { 
+                        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                            console.log("HELLO");
+                        }
+                }
+                xhr.send(data);
+                */
+                var data = {"map" : map};
+                fetch("{{route('startgamesingleplayer.preparing')}}", {
+                    method: 'POST', 
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': '{{csrf_token()}}'
+                    },
+                    body: JSON.stringify(data),
+                    })
+                    .then(response => {
+                    if(!response.ok){
+                        console.log("ok");
+                    }
+                    })
+                    .then(data => {
+                    console.log('Success:', data);
+                    })
+                    .catch((error) => {
+                    console.error('Error:', error);
+                    });
+             });
 
             document.getElementById("rotate-ships-btn").addEventListener("click", function(){
                 for(var ship of document.querySelectorAll("#ship-box .ship")){
@@ -367,19 +389,5 @@
             }
         }
 
-        function allowDrop(ev) {
-            ev.preventDefault();
-        }
-
-        function drag(ev) {
-             ev.dataTransfer.setData("text", ev.target.id);
-             console.log(ev);
-        } 
-        function drop(ev) {
-            ev.preventDefault();
-            var data = ev.dataTransfer.getData("text");
-            ev.target.appendChild(document.getElementById(data));
-            console.log(ev);
-        }
     </script>
 @endsection
