@@ -5,7 +5,7 @@
         <div class="container text-center">
             <p class="mt-5 h4">The Battelship game is the best in the world, try it yourself now as guest or you can registrate!</p>
             <p><img src="./images/logo.png" alt="image"/></p>
-            <a href="{{ route('PlayAsGuest') }}" class="play-as-guest card">Play as guest</a>
+            <a href="{{ route('guest.preparing') }}" class="play-as-guest card">Play as guest</a>
         </div>
     @else
         <div class="container">
@@ -85,12 +85,7 @@
     @auth
         <script>
             window.onload = function(){
-                document.getElementById("single").addEventListener("click", startSinglePlayer);
                 document.getElementById("multi").addEventListener("click", startMultiPlayer);
-            }
-
-            function startSinglePlayer(){
-
             }
 
             function startMultiPlayer(){
