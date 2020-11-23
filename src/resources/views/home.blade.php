@@ -61,17 +61,24 @@
             text-decoration: none;
             color: black;
         }
+        .play-as-guest {
+            display: inline-block;
+            text-decoration: none;
+            color: black;
+            padding: 20px;
+            border: 1px solid black;
+            border-radius: 50px;
+            font-size: 18pt;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+            cursor: pointer;
+            user-select: none;
+        }
 
-        .PlayAsGuest {
-            background-color: rgba(0,0,0,0.05);
-            text-decoration: none;  
-            font: 40px "Nunito", sans-serif;
-            color: grey;
-            box-shadow: 0px 0px 20px 20px rgba(0,0,0,0.3);
-            border-radius: 50%;
-            padding: 17px;
-            margin-left: 25px;
-            border: none;
+        .play-as-guest:hover {
+            box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+            text-decoration: none;
+            color: black;
         }
     </style>
 @endsection

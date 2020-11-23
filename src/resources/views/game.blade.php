@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <h4 class="text-center">Your turn</h4>
+    <h4 id="turn" class="text-center">Your turn!</h4>
     <div class="row text-center">
         <div class="col">
             <table id="my-map">
@@ -46,6 +46,7 @@
         <div id="message-block" class="mt-5 mx-5 text-center p-3">
             <h5>Message block</h5>
             <hr/>
+            <p>Game start!</p>
         </div>
         <div class="col">
             <table id="enemy-map">
@@ -128,6 +129,7 @@
             border: 1px solid gray;
             border-radius: 50px;
             width: 200px;
+            height: 380px;
             overflow: auto;
         }
 
@@ -208,13 +210,19 @@
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         ];
         var messageBlock, enemyMapContainer;
+        var turnText;
 
         window.onload = function(){
             generateEnemyShips();
             console.log(enemyMap);
             messageBlock = document.getElementById('message-block');
             enemyMapContainer = document.getElementById("enemy-map");
+            turnText = document.getElementById("turn");
         }
+        var myShips = 17;
+        var enemyShips = 17;
+        var interval;
+        var colLetter = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 
         function sectionClicked(event){
             enemyMapContainer.classList.toggle("blocked");
@@ -223,16 +231,48 @@
             var row = parseInt(coords[1]);
             var col = parseInt(coords[2]);
             event.target.classList.toggle("shootable");
+            var message;
             if(enemyMap[row][col] == 0){
                 event.target.classList.toggle("miss");
-                enemyMapContainer.classList.toggle("blocked");
+                turnText.innerHTML = "Computer's turn!";
+                interval = setInterval(computerTurn, 1500);
+                message = "You shot "+row+colLetter[col]+", miss!";
             }
             else{
                 event.target.classList.toggle("hit");
                 setTimeout(() => {
                     enemyMapContainer.classList.toggle("blocked");
                 }, 500);
+                --enemyShips;
+                message = "You shot "+row+colLetter[col]+", hit!";
             }
+            messageBlock.innerHTML+='<p>'+message+'</p>';
+            messageBlock.scrollTop = messageBlock.scrollHeight;
+        }
+
+        function computerTurn(){
+            do{
+                row = Math.floor(Math.random() * 10);
+                col = Math.floor(Math.random() * 10);
+            }while(myMap[row][col] == 9);
+            if(myMap[row][col] == 0){
+                document.getElementById("my-"+row+"-"+col).classList.toggle("miss");
+                myMap[row][col] = 9;
+                clearInterval(interval);
+                enemyMapContainer.classList.toggle("blocked");
+                turnText.innerHTML = "Your turn!";
+                message = "Computer shot "+row+colLetter[col]+", miss!";
+            }
+            else{
+                var section = document.getElementById("my-"+row+"-"+col);
+                section.removeChild(section.children[0]);
+                section.classList.toggle("hit");
+                myMap[row][col] = 9;
+                --myShips;
+                message = "Computer shot "+row+colLetter[col]+", hit!";
+            }
+            messageBlock.innerHTML+='<p>'+message+'</p>';
+            messageBlock.scrollTop = messageBlock.scrollHeight;
         }
 
         // ellenfél hajóinak generálása, elhelyezése
