@@ -66,10 +66,66 @@
             </table>
         </div>
     </div>
+    <div id="game-over-block" class="d-none">
+        <div id="game-over-message" class="p-5 text-center">
+            <h4 id="title" class="mb-5"></h4>
+            @guest
+                <a id="rematch-btn" class="btn" href="{{ route('guest.preparing') }}">Rematch</a>
+            @else
+                <div class="mb-5">
+                    <div id="reward">0 XP</div>
+                    <div id="user-xp">
+                        <span>{{ Auth::user()->level . " lvl." }}</span>
+                        <div id="status-bar">
+                            <div id="old-xp"></div>
+                            <div id="new-xp"></div>
+                        </div>
+                        <span>{{ (Auth::user()->level + 1) . " lvl." }}</span>
+                    </div>
+                </div>
+                <a id="rematch-btn" class="btn" href="{{ route('singleplayer.preparing') }}">Rematch</a>
+            @endguest
+            <a id="home-btn" class="btn ml-4" href="{{ route('home') }}">Back to Home</a>
+        </div>
+    </div>
 @endsection
 
 @section('page_style')
     <style>
+
+        /* @keyframes move {
+            0% { scale: 0; }
+            100% { scale: 1; }
+        } */
+
+        #status-bar {
+            display: inline-block;
+            height: 10px;
+            width: 60%;
+            border-radius: 20px;
+            background-color: #c9c9c9;
+        }
+
+        #old-xp {
+            display: inline-block;
+            background-color: blue;
+            border-radius: 20px 0 0 20px;
+            height: 100%;
+            float: left;
+            /* animation: move 2s cubic-bezier(0, 0.51, 0.73, 0.74); */
+            /* width: 60%; */
+        }
+
+        #new-xp {
+            display: inline-block;
+            background-color: green;
+            border-radius: 0 20px 20px 0;
+            height: 100%;
+            float: left;
+            /* animation: move 2s cubic-bezier(0, 0.51, 0.73, 0.74); */
+            /* width: 24%; */
+        }
+
         .section {
             position: relative;
             width: 38px;
@@ -95,7 +151,6 @@
         .miss {
             pointer-events: none;
             visibility: hidden;
-            /* filter: brightness(0.8); */
         }
 
         @keyframes hit {
@@ -105,7 +160,7 @@
             30%  {background: radial-gradient(circle, rgba(255,0,0,1) 3%, rgba(165,42,42,1) 20%, rgba(173,216,230,1) 30%);}
             40%  {background: radial-gradient(circle, rgba(255,0,0,1) 4%, rgba(165,42,42,1) 25%, rgba(173,216,230,1) 40%);}
             50%  {background: radial-gradient(circle, rgba(255,0,0,1) 5%, rgba(165,42,42,1) 30%, rgba(173,216,230,1) 50%);}
-            60%  {background: radial-gradient(circle, rgba(255,0,0,1) 6%, rgba(165,42,42,1) 35%, rgba(173,216,230,1) 60%);}
+            60%  {background: radial-gradient(circle, rgba(255,0,0,1) 6%, rgba(165,42,42,1) 35%, rgba(173,216,230,1) 60%); z-index: 1;}
             70%  {background: radial-gradient(circle, rgba(255,0,0,1) 7%, rgba(165,42,42,1) 40%, rgba(173,216,230,1) 70%); transform: scale(1.25)}
             80%  {background: radial-gradient(circle, rgba(255,0,0,1) 8%, rgba(165,42,42,1) 45%, rgba(173,216,230,1) 80%); transform: scale(1.5)}
             90%  {background: radial-gradient(circle, rgba(255,0,0,1) 7%, rgba(165,42,42,1) 40%, rgba(173,216,230,1) 70%); transform: scale(1.25)}
@@ -113,7 +168,6 @@
         }
 
         .hit {
-            z-index: 1;
             pointer-events: none;
             animation-name: hit;
             animation-duration: 0.5s;
@@ -128,9 +182,48 @@
         #message-block {
             border: 1px solid gray;
             border-radius: 50px;
-            width: 200px;
+            width: 250px;
             height: 380px;
             overflow: auto;
+        }
+
+        #game-over-block {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: rgba(255, 255, 255, 0.6);
+            height: 100vh;
+            width: 100%;
+        }
+
+        #game-over-message {
+            width: 50%;
+            margin-right: auto;
+            margin-left: auto;
+            margin-top: 200px;
+            background: white;
+            border: 1px solid gray;
+            border-radius: 50px;
+        }
+
+        .btn {
+            display: inline-block;
+            text-decoration: none;
+            color: black;
+            padding: 20px;
+            border: 1px solid black;
+            border-radius: 50px;
+            font-size: 12pt;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .btn:hover {
+            box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+            text-decoration: none;
+            color: black;
         }
 
         .ship-body-horizontal {
@@ -197,6 +290,20 @@
     <script>
         var ships = [5, 4, 3, 3, 2];    // kigenerálandó hajók
         var myMap = {{ json_encode($map) }};    // saját map
+        var user = JSON.parse("{{ Auth::check() ? Auth::user() : 0 }}".replaceAll("&quot;", "\""));
+        var userLvl, userXp;
+        if(user){
+            userLvl = user.level;  // felhasználó szintje
+            userXp = user.experience_points; // felhasználó xp-je
+            userXp = userXp - (userLvl - 1) * 1000;
+        }
+        var myShips = 17;   // saját ép hajóelemek száma
+        var enemyShips = 17; // ellenfél ép hajóelemeinek száma
+        var colLetter = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]; // oszlopok kódjai
+        var prevShotIsHit = false, prevRow, prevCol;  // információk az előző lövésről
+        var messageBlock, enemyMapContainer, turnText, gameOverBlock, rewardText, userXpProgress, rewardProgress;   // html objektumok
+        var numberOfShots = 0, numberOfHits = 0;
+        var startTime = new Date(), endTime;
         var enemyMap = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -208,71 +315,144 @@
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        ];  // ellenfél map-je
+
+        const orientations = [
+            [-1, 0],    // up
+            [1, 0],     // down
+            [0, -1],    // left
+            [0, 1]      // right
         ];
-        var messageBlock, enemyMapContainer;
-        var turnText;
 
         window.onload = function(){
-            generateEnemyShips();
-            console.log(enemyMap);
+            generateEnemyShips();   // ellenfél hajóinak kigenerálása
+            // html objektumok lekérése
             messageBlock = document.getElementById('message-block');
             enemyMapContainer = document.getElementById("enemy-map");
             turnText = document.getElementById("turn");
+            gameOverBlock = document.getElementById("game-over-block");
+            if(user){
+                rewardText = document.getElementById("reward");
+                userXpProgress = document.getElementById("old-xp");
+                rewardProgress = document.getElementById("new-xp");
+            }
         }
-        var myShips = 17;
-        var enemyShips = 17;
-        var interval;
-        var colLetter = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 
+
+        var interval;
+        // saját kör
         function sectionClicked(event){
-            enemyMapContainer.classList.toggle("blocked");
-            console.log(event.target.id);
-            var coords = event.target.id.split("-");
-            var row = parseInt(coords[1]);
-            var col = parseInt(coords[2]);
-            event.target.classList.toggle("shootable");
+            ++numberOfShots;
+            enemyMapContainer.classList.toggle("blocked");  // ellenfél map blokkolása
+            var coords = event.target.id.split("-");    //
+            var row = parseInt(coords[1]);              // koordináták kiolvasása
+            var col = parseInt(coords[2]);              //
+            event.target.classList.toggle("shootable"); // szekció nem lesz lőhető többet
             var message;
             if(enemyMap[row][col] == 0){
-                event.target.classList.toggle("miss");
-                turnText.innerHTML = "Computer's turn!";
-                interval = setInterval(computerTurn, 1500);
+                // nincs találat
+                event.target.classList.toggle("miss");  // eltüntetjük a szekciót
+                turnText.innerHTML = "Computer's turn!";// szöveg módosítása
                 message = "You shot "+row+colLetter[col]+", miss!";
+                interval = setInterval(computerTurn, 1500); // ellenfél meghívása 1.5 másodpercenként
             }
             else{
-                event.target.classList.toggle("hit");
+                // van találat
+                ++numberOfHits;
+                event.target.classList.toggle("hit");   // animáció lejátszása
                 setTimeout(() => {
                     enemyMapContainer.classList.toggle("blocked");
-                }, 500);
-                --enemyShips;
+                }, 500);    // enemy map blokkolásának vége
                 message = "You shot "+row+colLetter[col]+", hit!";
+                --enemyShips;
             }
             messageBlock.innerHTML+='<p>'+message+'</p>';
-            messageBlock.scrollTop = messageBlock.scrollHeight;
+            messageBlock.scrollTop = messageBlock.scrollHeight; // üzenet kiírása
+            if(enemyShips == 0) gameOver(); // ha elfogytak az ellenfél hajóelemei, akkor vége
         }
 
+        // ellenfél köre
         function computerTurn(){
-            do{
-                row = Math.floor(Math.random() * 10);
-                col = Math.floor(Math.random() * 10);
-            }while(myMap[row][col] == 9);
+            var row, col;
+            if(prevShotIsHit){
+                // ha az előző lövés találat volt
+                for(var orient of orientations){
+                    // kersünk egy szekciót a koordináta mellett, ahova lehet lőni (fel, le, balra, jobbra)
+                    var stepRow = orient[0];
+                    var stepCol = orient[1];
+                    if(prevRow+stepRow < 0 || prevRow+stepRow > 9 || prevCol+stepCol < 0 || prevCol+stepCol > 9)
+                        continue;
+                    else if(myMap[prevRow+stepRow][prevCol+stepCol] == 9){
+                        continue;
+                    }
+                    else{
+                        row = prevRow+stepRow;
+                        col = prevCol+stepCol;
+                        break;
+                    }
+                }
+            }
+            if(!row && !col){
+                // ha nem volt az előző lövés találat vagy nem tud a mellé lőni
+                prevShotIsHit = false;
+                // új koordináták generálása
+                do{
+                    row = Math.floor(Math.random() * 10);
+                    col = Math.floor(Math.random() * 10);
+                }while(myMap[row][col] == 9);
+            }
             if(myMap[row][col] == 0){
-                document.getElementById("my-"+row+"-"+col).classList.toggle("miss");
+                // nincs találat
+                document.getElementById("my-"+row+"-"+col).classList.toggle("miss");    // eltüntetjük a szekciót
                 myMap[row][col] = 9;
-                clearInterval(interval);
-                enemyMapContainer.classList.toggle("blocked");
+                clearInterval(interval);    // a computer leáll a lövésekkel
+                enemyMapContainer.classList.toggle("blocked");  // kiszedjük az ellenfél map-jéről a blokkolást
                 turnText.innerHTML = "Your turn!";
                 message = "Computer shot "+row+colLetter[col]+", miss!";
             }
             else{
+                // van találat
                 var section = document.getElementById("my-"+row+"-"+col);
-                section.removeChild(section.children[0]);
-                section.classList.toggle("hit");
+                section.removeChild(section.children[0]);   // hajó eltávolítása
+                section.classList.toggle("hit");    // animáció lejátszása
                 myMap[row][col] = 9;
                 --myShips;
                 message = "Computer shot "+row+colLetter[col]+", hit!";
+                prevShotIsHit = true;
+                prevRow = row;
+                prevCol = col;
             }
             messageBlock.innerHTML+='<p>'+message+'</p>';
-            messageBlock.scrollTop = messageBlock.scrollHeight;
+            messageBlock.scrollTop = messageBlock.scrollHeight; // üzenet kiírása
+            if(myShips == 0){   // ha elfogynak a saját hajóelemeink, vége
+                clearInterval(interval);
+                gameOver();
+            }
+        }
+
+        // játék vége
+        function gameOver(){
+            var youAreTheWinner = enemyShips == 0;
+            if(user){
+                endTime = new Date();
+                var playedTime = Math.floor((endTime - startTime) / 1000);
+                var reward = Math.floor((numberOfHits / numberOfShots) * (34 / playedTime) * 1000) + (youAreTheWinner ? 100 : 0);
+                var userXpWidth = Math.floor(userXp / 10);
+                var rewardWidth = Math.floor(reward / 10);
+                rewardText.innerHTML = "+" + reward + " XP";
+                userXpProgress.style.width = userXpWidth + "%";
+                rewardProgress.style.width = rewardWidth + "%";
+            }
+            // üzenet beállítása és megjelenítése
+            var title;
+            if(youAreTheWinner){
+                title = "You Won!";
+            }
+            else{
+                title = "Computer Won!";
+            }
+            gameOverBlock.querySelector("#title").innerHTML = title;
+            gameOverBlock.classList.toggle("d-none");
         }
 
         // ellenfél hajóinak generálása, elhelyezése

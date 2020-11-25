@@ -61,6 +61,7 @@
             text-decoration: none;
             color: black;
         }
+        
         .play-as-guest {
             display: inline-block;
             text-decoration: none;
