@@ -88,6 +88,17 @@
             <a id="home-btn" class="btn ml-4" href="{{ route('home') }}">Back to Home</a>
         </div>
     </div>
+    <form id="new-game-form" method="POST" action="{{ route('game.save') }}" target="target-iframe">
+        @csrf
+        <input type="hidden" name="player_one_id"></input>
+        <input type="hidden" name="player_two_id"></input>
+        <input type="hidden" name="starting_time"></input>
+        <input type="hidden" name="played_time"></input>
+        <input type="hidden" name="player_one_xp"></input>
+        <input type="hidden" name="player_two_xp"></input>
+        <input type="hidden" name="winner"></input>
+    </form>
+    <iframe name="target-iframe" class="d-none"></iframe>
 @endsection
 
 @section('page_style')
@@ -302,6 +313,7 @@
         var colLetter = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]; // oszlopok kódjai
         var prevShotIsHit = false, prevRow, prevCol;  // információk az előző lövésről
         var messageBlock, enemyMapContainer, turnText, gameOverBlock, rewardText, userXpProgress, rewardProgress;   // html objektumok
+        var newGameForm;
         var numberOfShots = 0, numberOfHits = 0;
         var startTime = new Date(), endTime;
         var enemyMap = [
@@ -335,6 +347,7 @@
                 rewardText = document.getElementById("reward");
                 userXpProgress = document.getElementById("old-xp");
                 rewardProgress = document.getElementById("new-xp");
+                newGameForm = document.getElementById("new-game-form");
             }
         }
 
@@ -433,16 +446,6 @@
         // játék vége
         function gameOver(){
             var youAreTheWinner = enemyShips == 0;
-            if(user){
-                endTime = new Date();
-                var playedTime = Math.floor((endTime - startTime) / 1000);
-                var reward = Math.floor((numberOfHits / numberOfShots) * (34 / playedTime) * 1000) + (youAreTheWinner ? 100 : 0);
-                var userXpWidth = Math.floor(userXp / 10);
-                var rewardWidth = Math.floor(reward / 10);
-                rewardText.innerHTML = "+" + reward + " XP";
-                userXpProgress.style.width = userXpWidth + "%";
-                rewardProgress.style.width = rewardWidth + "%";
-            }
             // üzenet beállítása és megjelenítése
             var title;
             if(youAreTheWinner){
@@ -453,6 +456,25 @@
             }
             gameOverBlock.querySelector("#title").innerHTML = title;
             gameOverBlock.classList.toggle("d-none");
+            
+            if(user){
+                endTime = new Date();
+                var playedTime = Math.floor((endTime - startTime) / 1000);
+                var reward = Math.floor((numberOfHits / numberOfShots) * (34 / playedTime) * 1000) + (youAreTheWinner ? 100 : 0);
+                var userXpWidth = Math.floor(userXp / 10);
+                var rewardWidth = Math.floor(reward / 10);
+                rewardText.innerHTML = "+" + reward + " XP";
+                userXpProgress.style.width = userXpWidth + "%";
+                rewardProgress.style.width = rewardWidth + "%";
+                newGameForm.player_one_id.value = user.id;
+                newGameForm.player_two_id.value = 0;
+                newGameForm.starting_time.value = startTime.toDateString();
+                newGameForm.played_time.value = playedTime;
+                newGameForm.player_one_xp.value = reward;
+                newGameForm.player_two_xp.value = 0;
+                newGameForm.winner.value = youAreTheWinner ? user.id : 0;
+                newGameForm.submit();
+            }
         }
 
         // ellenfél hajóinak generálása, elhelyezése

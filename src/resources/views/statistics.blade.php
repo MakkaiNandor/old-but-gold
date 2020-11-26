@@ -64,7 +64,6 @@
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
     <script>
         var user = {!! Auth::user() !!};
-        var playings = {!! $playings !!};
         var games = {!! $games !!};
 
         window.onload = function() {
@@ -145,15 +144,11 @@
                 for(var game of games){
                     var start = new Date(game.starting_time);
                     if(start.getFullYear() == date.getFullYear() && start.getMonth() == date.getMonth() && start.getDate() == date.getDate()){
-                        for(var playing of playings){
-                            if(game.id == playing.game_id){
-                                if(playing.is_winner == "1"){
-                                    ++victories;
-                                }
-                                else{
-                                    ++defeats;
-                                }
-                            }
+                        if(user.id == game.winner){
+                            ++victories;
+                        }
+                        else{
+                            ++defeats;
                         }
                     }
                 }

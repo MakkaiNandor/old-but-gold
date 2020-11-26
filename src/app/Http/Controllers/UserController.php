@@ -10,17 +10,5 @@ use Illuminate\Database\Eloquent\Collection;
 
 class UserController extends Controller
 {
-    function statistics(){
-        $playings = Auth::user()->playings;
-        $games = new Collection;
     
-        foreach($playings as $playing){
-            $games->push($playing->game);
-        }
-    
-        return view('statistics', [
-            'playings' => $playings,
-            'games' => $games
-        ]);
-    }
 }
