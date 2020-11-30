@@ -32,5 +32,21 @@
 </script>
 
 <style>
+    .section {
+        position: relative;
+        width: 38px;
+        height: 38px;
+        background-color: lightblue;
+    }
 
+    .shootable {
+        transition: all 0.5s cubic-bezier(.25,.8,.25,1);
+        cursor: pointer;
+    }
+
+    .shootable:hover {
+        transform: scale(1.2);
+        filter: brightness(0.8);
+        z-index: 1;
+    }
 </style>

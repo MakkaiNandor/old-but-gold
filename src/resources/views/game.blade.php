@@ -19,7 +19,7 @@
         <div id="game-over-message" class="p-5 text-center">
             <h4 id="title" class="mb-5"></h4>
             @guest
-                <a id="rematch-btn" class="btn" href="{{ route('guest.preparing') }}">Rematch</a>
+                <my-button id="rematch-btn" text="Rematch" route="{{ route('guest.preparing') }}"></my-button>
             @else
                 <div class="mb-5">
                     <div id="reward">0 XP</div>
@@ -32,9 +32,9 @@
                         <span>{{ (Auth::user()->level + 1) . " lvl." }}</span>
                     </div>
                 </div>
-                <a id="rematch-btn" class="btn" href="{{ route('singleplayer.preparing') }}">Rematch</a>
+                <my-button id="rematch-btn" text="Rematch" route="{{ route('singleplayer.preparing') }}"></my-button>
             @endguest
-            <a id="home-btn" class="btn ml-4" href="{{ route('home') }}">Back to Home</a>
+            <my-button id="home-btn" text="Back to Home" route="{{ route('home') }}"></my-button>
         </div>
     </div>
     <form id="new-game-form" method="POST" action="{{ route('game.save') }}" target="target-iframe">
@@ -76,26 +76,8 @@
             float: left;
         }
 
-        .section {
-            position: relative;
-            width: 38px;
-            height: 38px;
-            background-color: lightblue;
-        }
-
         .blocked {
             pointer-events: none;
-        }
-
-        .shootable {
-            transition: all 0.5s cubic-bezier(.25,.8,.25,1);
-            cursor: pointer;
-        }
-
-        .shootable:hover {
-            transform: scale(1.2);
-            filter: brightness(0.8);
-            z-index: 1;
         }
 
         .miss {
@@ -156,82 +138,8 @@
             border-radius: 50px;
         }
 
-        .btn {
-            display: inline-block;
-            text-decoration: none;
-            color: black;
-            padding: 20px;
-            border: 1px solid black;
-            border-radius: 50px;
-            font-size: 12pt;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-            transition: all 0.3s cubic-bezier(.25,.8,.25,1);
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .btn:hover {
-            box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
-            text-decoration: none;
-            color: black;
-        }
-
-        .ship-body-horizontal {
-            position: absolute;
-            background-color: brown;
-            top: 2px;
-            left: -1px;
-            right: -1px;
-            bottom: 2px;
-        }
-
-        .ship-body-vertical {
-            position: absolute;
-            background-color: brown;
-            top: -1px;
-            left: 2px;
-            right: 2px;
-            bottom: -1px;
-        }
-
-        .ship-end-up {
-            position: absolute;
-            background-color:brown;
-            top: 2px;
-            left: 2px;
-            right: 2px;
-            bottom: -1px;
-            border-radius: 50px 50px 0 0;
-        }
-
-        .ship-end-down {
-            position: absolute;
-            background-color:brown;
-            top: -1px;
-            left: 2px;
-            right: 2px;
-            bottom: 2px;
-            border-radius: 0 0 50px 50px;
-        }
-
-        .ship-end-left {
-            position: absolute;
-            background-color:brown;
-            top: 2px;
-            left: 2px;
-            right: -1px;
-            bottom: 2px;
-            border-radius: 50px 0 0 50px;
-        }
-
-        .ship-end-right {
-            position: absolute;
-            background-color:brown;
-            top: 2px;
-            left: -1px;
-            right: 2px;
-            bottom: 2px;
-            border-radius: 0 50px 50px 0;
+        #rematch-btn, #home-btn {
+            transform: scale(0.8);
         }
     </style>
 @endsection
