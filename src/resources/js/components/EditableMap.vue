@@ -53,6 +53,7 @@
             },
             drop(event) {
                 event.preventDefault();
+                if(event.target.className != "section") return;
                 var shipId = event.dataTransfer.getData("id");
                 var shipSize = parseInt(shipId.split("-").pop());   // hajó mérete
                 var isRotated = event.dataTransfer.getData("className").split(" ").includes("rotate-ship");   // vizszintes vagy fuggoleges
@@ -157,8 +158,7 @@
                         newDiv.className = className2;
                         this.map[row+stepRow*i][col+stepCol*i] = code2;
                     }
-                    var target = document.getElementById("" + (row+stepRow*i) + "-" + (col+stepCol*i));
-                    target.appendChild(newDiv);
+                    document.getElementById("" + (row+stepRow*i) + "-" + (col+stepCol*i)).appendChild(newDiv);
                 }
             }
         }

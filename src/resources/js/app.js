@@ -27,6 +27,11 @@ files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+// Vue.prototype.$numberOfShots = 0;
+// Vue.prototype.$numberOfHits = 0;
+// Vue.prototype.$myShips = 17;
+// Vue.prototype.$enemyShips = 17;
+
 const app = new Vue({
     el: '#app'
 });
