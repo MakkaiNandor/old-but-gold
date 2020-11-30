@@ -4,49 +4,12 @@
     <h4 id="turn" class="text-center">Your turn!</h4>
     <div class="row text-center">
         <div class="col">
-            <table id="my-map">
-                <tr>
-                    @foreach(["", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J"] as $col)
-                        <th>{{ $col }}</th>
-                    @endforeach
-                </tr>
-                @for($i = 0 ; $i < 10 ; $i++)
-                    <tr key="{{ $i }}" id="my-row-{{ $i }}">
-                        <td style="padding-right: 10px; font-weight: bold;">{{ $i }}</td>
-                        @for($j = 0 ; $j < 10 ; $j++)
-                            <td><div id="my-{{ $i }}-{{ $j }}" class="section">
-                                @switch($map[$i][$j])
-                                    @case(1)
-                                        <div class="ship-end-up"></div>
-                                        @break
-                                    @case(-1)
-                                        <div class="ship-end-left"></div>
-                                        @break
-                                    @case(2)
-                                        <div class="ship-end-down"></div>
-                                        @break
-                                    @case(-2)
-                                        <div class="ship-end-right"></div>
-                                        @break
-                                    @case(3)
-                                        <div class="ship-body-vertical"></div>
-                                        @break
-                                    @case(-3)
-                                        <div class="ship-body-horizontal"></div>
-                                        @break
-                                    @default
-                                        @break
-                                @endswitch
-                            </div></td>
-                        @endfor
-                    </tr>
-                @endfor
-            </table>
+            <my-map v-bind:map="{{ json_encode($map) }}"></my-map>
         </div>
         <div id="message-block" class="mt-5 mx-5 text-center p-3">
             <h5>Message block</h5>
             <hr/>
-            <p>Game start!</p>
+            <p><strong>Game start!</strong></p>
         </div>
         <div class="col">
             <table id="enemy-map">
@@ -103,12 +66,6 @@
 
 @section('page_style')
     <style>
-
-        /* @keyframes move {
-            0% { scale: 0; }
-            100% { scale: 1; }
-        } */
-
         #status-bar {
             display: inline-block;
             height: 10px;
@@ -123,8 +80,6 @@
             border-radius: 20px 0 0 20px;
             height: 100%;
             float: left;
-            /* animation: move 2s cubic-bezier(0, 0.51, 0.73, 0.74); */
-            /* width: 60%; */
         }
 
         #new-xp {
@@ -133,8 +88,6 @@
             border-radius: 0 20px 20px 0;
             height: 100%;
             float: left;
-            /* animation: move 2s cubic-bezier(0, 0.51, 0.73, 0.74); */
-            /* width: 24%; */
         }
 
         .section {
@@ -361,12 +314,13 @@
             var row = parseInt(coords[1]);              // koordináták kiolvasása
             var col = parseInt(coords[2]);              //
             event.target.classList.toggle("shootable"); // szekció nem lesz lőhető többet
-            var message;
+            var message, style;
             if(enemyMap[row][col] == 0){
                 // nincs találat
                 event.target.classList.toggle("miss");  // eltüntetjük a szekciót
                 turnText.innerHTML = "Computer's turn!";// szöveg módosítása
-                message = "You shot "+row+colLetter[col]+", miss!";
+                message = "<strong>You</strong> shot "+row+colLetter[col]+", miss!";
+                style = "color: red;";
                 interval = setInterval(computerTurn, 1500); // ellenfél meghívása 1.5 másodpercenként
             }
             else{
@@ -376,17 +330,18 @@
                 setTimeout(() => {
                     enemyMapContainer.classList.toggle("blocked");
                 }, 500);    // enemy map blokkolásának vége
-                message = "You shot "+row+colLetter[col]+", hit!";
+                message = "<strong>You</strong> shot "+row+colLetter[col]+", hit!";
+                style = "color: green;";
                 --enemyShips;
             }
-            messageBlock.innerHTML+='<p>'+message+'</p>';
+            messageBlock.innerHTML+='<p style="' + style + '">'+message+'</p>';
             messageBlock.scrollTop = messageBlock.scrollHeight; // üzenet kiírása
             if(enemyShips == 0) gameOver(); // ha elfogytak az ellenfél hajóelemei, akkor vége
         }
 
         // ellenfél köre
         function computerTurn(){
-            var row, col;
+            var row, col, style;
             if(prevShotIsHit){
                 // ha az előző lövés találat volt
                 for(var orient of orientations){
@@ -421,7 +376,8 @@
                 clearInterval(interval);    // a computer leáll a lövésekkel
                 enemyMapContainer.classList.toggle("blocked");  // kiszedjük az ellenfél map-jéről a blokkolást
                 turnText.innerHTML = "Your turn!";
-                message = "Computer shot "+row+colLetter[col]+", miss!";
+                message = "<strong>Computer</strong> shot "+row+colLetter[col]+", miss!";
+                style = "color: red;";
             }
             else{
                 // van találat
@@ -430,12 +386,13 @@
                 section.classList.toggle("hit");    // animáció lejátszása
                 myMap[row][col] = 9;
                 --myShips;
-                message = "Computer shot "+row+colLetter[col]+", hit!";
+                message = "<strong>Computer</strong> shot "+row+colLetter[col]+", hit!";
+                style = "color: green;";
                 prevShotIsHit = true;
                 prevRow = row;
                 prevCol = col;
             }
-            messageBlock.innerHTML+='<p>'+message+'</p>';
+            messageBlock.innerHTML+='<p style="' + style + '">'+message+'</p>';
             messageBlock.scrollTop = messageBlock.scrollHeight; // üzenet kiírása
             if(myShips == 0){   // ha elfogynak a saját hajóelemeink, vége
                 clearInterval(interval);
