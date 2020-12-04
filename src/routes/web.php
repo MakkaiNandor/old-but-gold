@@ -32,7 +32,11 @@ Route::get('/profile', function(){
 })->name('profile')->middleware('auth');
 
 // felhasználó statisztikája
-Route::get('/statistics', [App\Http\Controllers\UserController::class, 'statistics'])->name('statistics')->middleware('auth');
+Route::get('/statistics', function(){
+    return view('statistics', [
+        'games' => Auth::user()->games,
+    ]);
+})->name('statistics')->middleware('auth');
 
 // felhasználó egyjátékos mód, játék előkészítése
 Route::get('/singleplayer/preparing', function(){
@@ -49,3 +53,6 @@ Route::get('/guest/preparing', function(){
 
 // vendég, játék
 Route::post('/guest/game', [App\Http\Controllers\GameController::class, 'startGame'])->name('guest.game');
+
+// játék mentése
+Route::post('/game/save', [App\Http\Controllers\GameController::class, 'saveGame'])->name('game.save');

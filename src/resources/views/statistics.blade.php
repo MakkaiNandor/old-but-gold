@@ -5,8 +5,8 @@
         <h2 id="title" class="text-center">Statistics</h2>
         <div class="row"> 
             <div id="left-side" class="col-sm border-right">
-                <div id="gamesPieChart" class="chart my-5" style="position: static; height: 360px; width: 90%;"></div>
-                <div id="gamesLineChart" class="chart my-5" style="position: static; height: 360px; width: 90%;"></div>
+                <div id="games-pie-chart" class="chart my-5" style="position: static; height: 360px; width: 90%;"></div>
+                <div id="games-line-chart" class="chart my-5" style="position: static; height: 360px; width: 90%;"></div>
             </div>
             <div id="right-side" class="col-sm text-center">
                 <table id="top-100"class="mt-5">
@@ -63,19 +63,22 @@
 @section('page_script')
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
     <script>
-        var user = {!! Auth::user() !!};
-        var playings = {!! $playings !!};
-        var games = {!! $games !!};
+        var user = {!! Auth::user() !!};  // felhasználó
+        var games = {!! $games !!};  // felhasználó által játszott játékok
 
         window.onload = function() {
+            // statisztikák megjelenítése
             var pieChart = createPieChart();
             var lineChart = createLineChart();
             pieChart.render();
             lineChart.render();
         }
 
+        /**
+         * Pie chart létrehozása
+         */
         function createPieChart(){
-            return new CanvasJS.Chart("gamesPieChart", {
+            return new CanvasJS.Chart("games-pie-chart", {
                 theme: "light2",
                 animationEnabled: true,	
                 title:{
@@ -97,9 +100,12 @@
             });
         }
 
+        /**
+         * Line chart létrehozása
+         */
         function createLineChart(){
             [victoriesData, defeatsData] = getDataPoints();
-            return new CanvasJS.Chart("gamesLineChart", {
+            return new CanvasJS.Chart("games-line-chart", {
                 animationEnabled: true,
                 theme: "light2",
                 title:{
@@ -129,6 +135,9 @@
             });
         }
 
+        /**
+         * Data points generation
+         */
         function getDataPoints(){
             var victoriesData = [], defeatsData = [];
             var date = new Date(user.created_at);
@@ -145,15 +154,11 @@
                 for(var game of games){
                     var start = new Date(game.starting_time);
                     if(start.getFullYear() == date.getFullYear() && start.getMonth() == date.getMonth() && start.getDate() == date.getDate()){
-                        for(var playing of playings){
-                            if(game.id == playing.game_id){
-                                if(playing.is_winner == "1"){
-                                    ++victories;
-                                }
-                                else{
-                                    ++defeats;
-                                }
-                            }
+                        if(user.id == game.winner){
+                            ++victories;
+                        }
+                        else{
+                            ++defeats;
                         }
                     }
                 }

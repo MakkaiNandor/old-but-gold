@@ -3,14 +3,14 @@
 @section('content')
     <div id="content" class="container pl-5 pr-5">
         <h2 id="title" class="text-center">Profile</h2>
-        <div id="section-one" class="section">
+        <div id="section-one" class="profile-section">
             <div id="avatar">{{ strtoupper($user->username[0]) }}</div>
             <span>{{ $user->username }}</span>
             <p>{{ $user->email }}</p>
             <p>{{ "Registration date: " . $user->created_at }}</p>
         </div>
         <hr />
-        <div class="section">
+        <div class="profile-section">
             <p>{{ "Lvl. " . $user->level }}</p>
             <p>{{ $user->experience_points . " XP" }}</p>
             <p>{{ "Played games: " . $user->played_games }}</p>
@@ -18,7 +18,7 @@
             <p>{{ "Defeats: " . $user->defeats }}</p>
         </div>
         <hr />
-        <div class="section">
+        <div class="profile-section">
             <p><a id="change-password-link" href="#">Change password</a></p>
             <p><a id="change-username-link" href="#">Change username</a></p>
             <p><a id="delete-account-link" href="#" style="color: red;">Delete account</a></p>

@@ -1,12 +1,13 @@
+
 <template>
-    <div class="container">
+    <div class="container" :id="id">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header">Example Component</div>
 
                     <div class="card-body">
-                        I'm an example component.
+                        Good morning {{ name }}
                     </div>
                 </div>
             </div>
@@ -16,6 +17,17 @@
 
 <script>
     export default {
+        props: {
+            name: {
+                type: String,
+                required: true,
+                default: 'Anonymous'
+            },
+            id: {
+                type: String,
+                required: true
+            }
+        },
         mounted() {
             console.log('Component mounted.')
         }
