@@ -46,6 +46,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    /**
+     * Get all played games by user.
+     * 
+     * @return object
+     */
     public function games(){
         $playerOneGames = $this->hasMany(Game::class, 'player_one_id');
         $playerTwoGames = $this->hasMany(Game::class, 'player_two_id');

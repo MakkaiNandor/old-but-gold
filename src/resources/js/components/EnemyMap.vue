@@ -21,6 +21,9 @@
             }
         },
         methods: {
+            /**
+             * Felhasználó lövése
+             */
             sectionClicked(event){
                 var temp = event.target.id.split('-');
                 var row = parseInt(temp[1]);

@@ -7,9 +7,7 @@
 </template>
 
 <script>
-import MyButton from './MyButton.vue'
     export default {
-  components: { MyButton },
         props: {
             logo: {
                 type: String,
@@ -19,9 +17,6 @@ import MyButton from './MyButton.vue'
                 type: String,
                 required: true
             }
-        },
-        mounted() {
-            console.log("Guest home page mounted!")
         }
     }
 </script>

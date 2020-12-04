@@ -9,7 +9,13 @@ use DateTime;
 
 class GameController extends Controller
 {
-
+    
+    /**
+     * Redirect to the 'gameplay view' and pass the data to it.
+     * 
+     * @param Request $request
+     * @return object
+     * */ 
     public function startGame(Request $request){
         $map = json_decode($request->data);
         return view('game', [
@@ -17,6 +23,12 @@ class GameController extends Controller
         ]);
     }
 
+    /**
+     * Create and store a new game in database, update user data.
+     * 
+     * @param Request $request
+     * @return void
+     */
     public function saveGame(Request $request){
         $newGame = new Game;
         $newGame->player_one_id = (int) $request->player_one_id;
