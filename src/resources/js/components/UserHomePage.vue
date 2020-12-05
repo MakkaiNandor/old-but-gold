@@ -11,6 +11,13 @@
             <my-button :route="sp_route" text="Singleplayer" :big_button="true"></my-button>
             <my-button :route="mp_route" text="Multiplayer" :big_button="true"></my-button>
         </div>
+        <div class="rules">
+            Now only the singleplayer mode is available.
+            If you click the <strong>singleplayer</strong> button, you can play Battleship's singleplayer mode against the <strong>computer</strong>. 
+            The object of Battleship is to try and sink all of the <strong>computer's</strong> before he sink all of your ships. You try and hit them by clicking the squares on the sea. The <strong>computer</strong> also tries to hit your ships.  
+            Each player places the 5 ships somewhere on their sea. The ships can only be placed vertically or horizontally. Diagonal placement is not allowed. No part of a ship may hang off the edge of the sea.  Ships may not overlap each other.
+            Your data will be saved. You can check statistics or your profile if you want. 
+        </div>
     </div>
 </template>
 
@@ -56,5 +63,8 @@
         margin-left: auto;
         margin-right: auto;
         margin-top: 10%;
+    }
+    .rules{
+        word-wrap: break-word;
     }
 </style>
