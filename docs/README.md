@@ -1,1 +1,1 @@
-# This is the documentation folder
+# This folder contains project's documentation.
