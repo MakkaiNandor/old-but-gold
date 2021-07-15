@@ -1,6 +1,7 @@
 # OldButGold
 
-University project
+### A university project
 
-Implements a webpage, where users can play the Battleship (Sea Battle) game.
-Created in Laravel.
+A web application where the users can play the classic Battleship (Sea Battle) game.
+
+Implemented in *Laravel* framework using *SQLite* database.
